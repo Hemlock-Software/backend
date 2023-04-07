@@ -23,24 +23,33 @@ public class UserController {
         return res;
     }
 
-    @ResponseBody
-    @GetMapping("/login")
-    public String login(@RequestParam("mail") String mail, @RequestParam("passwd") String passwd) throws IOException {
-        Long storedKeyNum = BackendApplication.singleRedisIO.Exists(mail);
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public JSONResult<LoginReply> Login(@RequestBody LoginArgs args) {
+        LoginReply reply = new LoginReply();
+        reply.token = "your token here";
+
+        Long storedKeyNum = BackendApplication.ColdData.Exists(args.mail);
         if(storedKeyNum == 0){
-            return "no such mail";
+            return new JSONResult<LoginReply>("400", "No such mail!", reply);
         }
 
-        String storedUserJson = BackendApplication.singleRedisIO.Get(mail);
+        String storedUserJson = BackendApplication.ColdData.Get(args.mail);
 
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 
-        if(Objects.equals(passwd, storedUserValue.Password)){
-            return "token:123456";
+        if(Objects.equals(args.passwd, storedUserValue.Password)){
+            return new JSONResult<LoginReply>("200", "success", reply);
         }else{
-            System.out.println(passwd + storedUserValue.Password);
-            return passwd + storedUserValue.Password;
+            return new JSONResult<LoginReply>("400", "Wrong password!", reply);
         }
     }
 
+}
+
+class LoginArgs{
+    public String mail;
+    public String passwd;
+}
+class LoginReply{
+    public String token;
 }

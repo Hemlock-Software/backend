@@ -1,15 +1,19 @@
 package com.hemlock.www.backend;
 
 
+import com.hemlock.www.backend.Redis.ClusterRedisIO;
+import com.hemlock.www.backend.Redis.SingleRedisIO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
 public class BackendApplication {
-    public static RedisIO singleRedisIO;
+    public static SingleRedisIO ColdData = null;
+    public static ClusterRedisIO HotData = null;
     public static void main(String[] args) {
-        singleRedisIO = new RedisIO();
+        ColdData = new SingleRedisIO("10.214.241.121",15000);
+        HotData = new ClusterRedisIO("10.214.241.121",15010);
         SpringApplication.run(BackendApplication.class, args);
     }
 

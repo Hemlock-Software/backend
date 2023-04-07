@@ -1,4 +1,4 @@
-package com.hemlock.www.backend;
+package com.hemlock.www.backend.Redis;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -8,20 +8,25 @@ import io.lettuce.core.api.sync.RedisCommands;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-public class RedisIO {
-    private RedisClient myClient;
-    private StatefulRedisConnection<String, String> myConnection;
+public class SingleRedisIO {
+    private RedisClient myClient = null;
+    private StatefulRedisConnection<String, String> myConnection = null;
 
-    public RedisIO(){
+    public SingleRedisIO(String ip, int port) {
         RedisURI redisUri = RedisURI.builder()
-                .withHost("10.214.241.121")
-                .withPort(15000)
+                .withHost(ip)
+                .withPort(port)
                 .withPassword("hemlock".toCharArray())
                 .withTimeout(Duration.of(10, ChronoUnit.SECONDS))
                 .build();
 
         myClient = RedisClient.create(redisUri);
         myConnection = myClient.connect();
+    }
+
+    public void Exit() {
+        myConnection.close();
+        myClient.shutdown();
     }
 
     public String Get(String key){
@@ -39,4 +44,10 @@ public class RedisIO {
         RedisCommands<String, String> syncCommands = myConnection.sync();
         return syncCommands.exists(key);
     }
+
+    public Boolean Expire(String key,Duration time){
+        RedisCommands<String, String> syncCommands = myConnection.sync();
+        return syncCommands.expire(key,time);
+    }
 }
+
