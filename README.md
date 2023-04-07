@@ -1,12 +1,9 @@
 # README
 
-## 环境配置
+## Environment Configuration
 
-### 1.项目要求
+### 1. Project Requirements
 
-* JDK版本：需要使用JDK20，（我的JDK版本太高了，安装的比较晚，我的）
-* 预先安装Maven工具
-* 使用idea开启本项目，在设置中更改Maven的配置路径。
-
-
-
+* JDK version: JDK 20
+* Pre-installed Maven tools
+* Use IDEA to open this project and change the Maven configuration path in the settings.
