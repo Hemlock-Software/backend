@@ -33,12 +33,3 @@ public class User {
 
 }
 
-class UserKey {
-    private String Mail;
-}
-
-class UserValue {
-    private String Nickname;
-    private String Password;
-    private Boolean IsManager;
-}
