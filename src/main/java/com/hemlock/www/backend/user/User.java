@@ -3,16 +3,32 @@ package com.hemlock.www.backend.user;
 import java.nio.channels.Pipe;
 
 public class User {
-    public String Mail;
-    public String Nickname;
-    public String Password;
-    public Boolean IsManager;
+    private String mail;
+    private String nickname;
+    private String password;
+    private Boolean isManager;
 
-    public User(String Mail, String Nickname, String Password, Boolean IsManager){
-        this.Mail = Mail;
-        this.Nickname = Nickname;
-        this.Password = Password;
-        this.IsManager = IsManager;
+    public User(String mail, String nickname, String password, Boolean isManager){
+        this.mail = mail;
+        this.nickname = nickname;
+        this.password = password;
+        this.isManager = isManager;
+    }
+
+    public String getMail() {
+        return this.mail;
+    }
+
+    public String getNickname() {
+        return this.nickname;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public Boolean getIsManager() {
+        return this.isManager;
     }
 
 }
