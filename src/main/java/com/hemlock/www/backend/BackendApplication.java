@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BackendApplication {
     public static SingleRedisIO ColdData = null;
     public static ClusterRedisIO HotData = null;
-
     public static TokenManager TokenServer = null;
     public static void main(String[] args) {
         ColdData = new SingleRedisIO("10.214.241.121",15000);

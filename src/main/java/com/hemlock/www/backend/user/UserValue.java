@@ -1,13 +1,37 @@
 package com.hemlock.www.backend.user;
 
 public class UserValue {
-    public String Nickname;
-    public String Password;
-    public Boolean IsManager;
+    private String nickname;
+    private String password;
+    private Boolean isManager;
 
-    public UserValue(String Nickname,String Password,Boolean IsManager){
-        this.Nickname = Nickname;
-        this.Password = Password;
-        this.IsManager = IsManager;
+    public UserValue(String nickname,String password,Boolean isManager){
+        this.nickname = nickname;
+        this.password = password;
+        this.isManager = isManager;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Boolean getIsManager() {
+        return isManager;
+    }
+
+    public void setIsManager(Boolean isManager) {
+        this.isManager = isManager;
     }
 }
