@@ -1,15 +1,13 @@
 package com.hemlock.www.backend.controller;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
+
 import com.hemlock.www.backend.common.*;
 import com.hemlock.www.backend.BackendApplication;
 import com.hemlock.www.backend.user.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.*;
-import java.sql.PreparedStatement;
-import java.io.IOException;
+
 import java.util.Objects;
 
 @RestController
@@ -18,7 +16,7 @@ public class UserController {
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public JSONResult<User> Hello() {
-        User guest = new User("3052791719@qq.com", "ly", "123456", true);
+        User guest = new User("3052791719@qq.com", "ly", "123", true);
         JSONResult<User> res = new JSONResult<>("200", "success", guest);
         return res;
     }
@@ -26,7 +24,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<LoginReply> Login(@RequestBody LoginArgs args) {
         LoginReply reply = new LoginReply();
-        reply.token = "your token here";
+
 
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.mail);
         if(storedKeyNum == 0){
@@ -38,10 +36,22 @@ public class UserController {
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 
         if(Objects.equals(args.passwd, storedUserValue.Password)){
+            reply.token = BackendApplication.TokenServer.SetToken(args.mail);
             return new JSONResult<LoginReply>("200", "success", reply);
         }else{
             return new JSONResult<LoginReply>("400", "Wrong password!", reply);
         }
+    }
+
+    @RequestMapping(value = "/checkToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public JSONResult Check(@RequestHeader("Authorization") String token){
+        //token会带前缀bearer ，从第七个字符开始
+        if(BackendApplication.TokenServer.Verify(token.substring(7))){
+            return new JSONResult("200","ok");
+        }else{
+            return new JSONResult("400","wrong token");
+        }
+
     }
 
 }
