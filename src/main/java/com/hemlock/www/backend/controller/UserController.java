@@ -120,12 +120,12 @@ public class UserController {
         email.setHostName("smtp.163.com");
         email.setCharset("utf-8");
         email.addTo(args.getMail());
-        email.setFrom("zjuhemlock@163.com","test");
+        email.setFrom("zjuhemlock@163.com","Hemlock");
         email.setAuthentication("zjuhemlock@163.com","MKFEKBLWRITFOPNE");
-        email.setSubject("测试");//设置发送主题
-        email.setMsg("验证码："+uid.toString());//设置发送内容
+        email.setSubject("铁树注册");//设置发送主题
+        email.setMsg("欢迎注册Hemlock聊天室，您的验证码："+uid.toString());//设置发送内容
 //        email.send();//进行发送
-        if (BackendApplication.ColdData.Set("User"+args.getMail(), storeVerificationCode) ){
+        if (BackendApplication.ColdData.Set("Verification"+args.getMail(), storeVerificationCode) ){
             email.send();
             return new JSONResult<String>("200", "success", "");
 
