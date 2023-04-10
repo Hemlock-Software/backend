@@ -5,6 +5,7 @@ import com.hemlock.www.backend.common.*;
 import com.hemlock.www.backend.BackendApplication;
 import com.hemlock.www.backend.user.*;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Objects;
 
 
@@ -22,6 +23,10 @@ public class UserController {
 
     @RequestMapping(value = "/join", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<String> Join(@RequestBody JoinArgs args) {
+        if (args.getMail() == null || args.getIsManager() == null || args.getPassword() == null) {
+            return new JSONResult<String>("400", "Missing field", "");
+        }
+
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
         if (storedKeyNum > 0) {
             return new JSONResult<String>("400", "This mail has been used!", "");
@@ -76,8 +81,7 @@ public class UserController {
 
 }
 
-class
-LoginArgs {
+class LoginArgs {
     private String mail;
     private String password;
 
