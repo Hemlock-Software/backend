@@ -4,8 +4,26 @@ import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.common.*;
 import com.hemlock.www.backend.BackendApplication;
 import com.hemlock.www.backend.user.*;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.SecureRandom;
 import java.util.Objects;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.util.Random;
 
 
 @RestController
@@ -21,7 +39,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/join", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<String> Join(@RequestBody JoinArgs args) {
+    public JSONResult<String> Join(@RequestBody JoinArgs args) throws EmailException {
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
         if (storedKeyNum > 0) {
             return new JSONResult<String>("400", "This mail has been used!", "");
@@ -74,10 +92,46 @@ public class UserController {
 
     }
 
+    @RequestMapping(value = "/sendMail", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public JSONResult<String> sendVerificationCode (@RequestBody MailArgs args) throws EmailException {
+        Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
+        if (storedKeyNum>0){
+            return new JSONResult<String>("400", "This mail has been used!", "");
+        }
+        StringBuffer uid = new StringBuffer();
+        Random rd = new SecureRandom();
+        for (int i=0;i<6;i++){
+            uid.append(rd.nextInt(10));
+        }
+        VerificationCode verificationCode = new VerificationCode(uid.toString());
+        String storeVerificationCode = JSON.toJSONString(verificationCode);
+
+        HtmlEmail email=new HtmlEmail();//创建一个HtmlEmail实例对象
+        email.setHostName("smtp.163.com");
+        email.setCharset("utf-8");
+        email.addTo("13954899675@163.com");
+        email.setFrom("zjuhemlock@163.com","test");
+        email.setAuthentication("zjuhemlock@163.com","MKFEKBLWRITFOPNE");
+        email.setSubject("测试");//设置发送主题
+        email.setMsg("验证码："+uid.toString());//设置发送内容
+//        email.send();//进行发送
+        if (BackendApplication.ColdData.Set("User"+args.getMail(), storeVerificationCode) ){
+            email.send();
+            return new JSONResult<String>("200", "success", "");
+
+        }
+
+        else
+            return new JSONResult<String>("400", "fail", "");
+
+
+
+
+
+    }
 }
 
-class
-LoginArgs {
+class LoginArgs {
     private String mail;
     private String password;
 
@@ -110,7 +164,16 @@ class LoginReply {
     }
 }
 
+class MailArgs{
+    private String mail;
 
+    public String getMail() {
+        return mail;
+    }
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+}
 class JoinArgs {
     private String mail;
 
