@@ -8,8 +8,9 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.SecureRandom;
+
+
 import java.util.Objects;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -39,7 +40,12 @@ public class UserController {
 
 
     @RequestMapping(value = "/join", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+
     public JSONResult<String> Join(@RequestBody JoinArgs args) throws EmailException {
+        if (args.getMail() == null || args.getIsManager() == null || args.getPassword() == null) {
+            return new JSONResult<String>("400", "Missing field", "");
+        }
+
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
         if (storedKeyNum > 0) {
             return new JSONResult<String>("400", "This mail has been used!", "");
@@ -64,14 +70,18 @@ public class UserController {
     public JSONResult<LoginReply> Login(@RequestBody LoginArgs args) {
         LoginReply reply = new LoginReply();
 
+        if (args.getMail() == null || args.getPassword() == null) {
+            return new JSONResult<LoginReply>("400", "Missing field", reply);
+        }
+
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
         if (storedKeyNum == 0) {
             return new JSONResult<LoginReply>("400", "No such mail!", reply);
         }
 
         String storedUserJson = BackendApplication.ColdData.Get(args.getMail());
-
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+        System.out.print(storedUserValue.getPassword());
 
         if (Objects.equals(args.getPassword(), storedUserValue.getPassword())) {
             reply.setToken(BackendApplication.TokenServer.SetToken(args.getMail()));
@@ -82,12 +92,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "/checkToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult Check(@RequestHeader("Authorization") String token) {
+    public JSONResult<String> Check(@RequestHeader("Authorization") String token) {
         //token会带前缀bearer ，从第七个字符开始
         if (BackendApplication.TokenServer.Verify(token.substring(7))) {
-            return new JSONResult("200", "ok");
+            return new JSONResult<String>("200", "ok",null);
         } else {
-            return new JSONResult("400", "wrong token");
+            return new JSONResult<String>("400", "wrong token",null);
         }
 
     }

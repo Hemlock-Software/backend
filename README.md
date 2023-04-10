@@ -61,3 +61,29 @@ public class User {
 
 
 在路由函数里，加上@RestController注解，函数将自动将自定义类 or List or Map 转为JSON对象传为前端！
+
+
+
+## Deployment
+
+我们（暂时）使用docker在服务器上部署，当然完全可以直接运行。（使用docker有大炮打文字的嫌疑）
+
+### 1.部署步骤
+
+1. 当我们更新完代码后，可以在本地idea使用maven插件里的life-cycle，先clean在build，目的是更新项目jar包（和docker无关）
+2. 在服务器上更新代码后，需要重新打包一下docker镜像，并且生成新的容器
+
+```shell
+# 先删除旧的镜像和容器
+docker stop 容器id
+docker rm 容器id 
+docker rmi 镜像id 
+
+docker build -t hemlock:v0.1 . #更新为新的镜像
+docker run -d -p 15100:15100 --name hemlockbackend hemlock:v0.1 # 生成新的镜像
+```
+
+
+
+
+

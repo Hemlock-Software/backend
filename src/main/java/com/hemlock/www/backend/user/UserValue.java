@@ -5,6 +5,7 @@ public class UserValue {
     private String password;
     private Boolean isManager;
 
+
     public UserValue(String nickname,String password,Boolean isManager){
         this.nickname = nickname;
         this.password = password;
