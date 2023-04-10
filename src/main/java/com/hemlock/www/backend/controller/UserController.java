@@ -119,7 +119,7 @@ public class UserController {
         HtmlEmail email=new HtmlEmail();//创建一个HtmlEmail实例对象
         email.setHostName("smtp.163.com");
         email.setCharset("utf-8");
-        email.addTo("13954899675@163.com");
+        email.addTo(args.getMail());
         email.setFrom("zjuhemlock@163.com","test");
         email.setAuthentication("zjuhemlock@163.com","MKFEKBLWRITFOPNE");
         email.setSubject("测试");//设置发送主题
