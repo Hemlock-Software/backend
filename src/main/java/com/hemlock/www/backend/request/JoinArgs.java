@@ -9,6 +9,7 @@ public class JoinArgs {
 
     private Boolean isManager;
 
+
     public String getMail() {
         return mail;
     }

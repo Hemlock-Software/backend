@@ -1,39 +1,29 @@
 package com.hemlock.www.backend.controller;
 
 import com.alibaba.fastjson2.JSON;
+import com.hemlock.www.backend.Token.TokenData;
 import com.hemlock.www.backend.common.*;
 import com.hemlock.www.backend.BackendApplication;
-import com.hemlock.www.backend.reply.*;
-import com.hemlock.www.backend.request.*;
 import com.hemlock.www.backend.user.*;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.SecureRandom;
 
 
 import java.util.Objects;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.File;
 import java.util.Random;
+
 
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-
+    @RequestMapping(value = "/hello", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<User> Hello() {
         User guest = new User("3052791719@qq.com", "ly", "123", true);
         JSONResult<User> res = new JSONResult<>("200", "success", guest);
@@ -42,8 +32,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/join", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-
-    public JSONResult<String> Join(@RequestBody JoinArgs args) throws EmailException {
+    public JSONResult<String> Join(@RequestBody JoinArgs args,@RequestHeader("Authorization") String token) throws EmailException {
         if (args.getMail() == null || args.getIsManager() == null || args.getPassword() == null) {
             return new JSONResult<String>("400", "Missing field", "");
         }
@@ -57,7 +46,18 @@ public class UserController {
         if (args.getNickname() != null) {
             userValue.setNickname(args.getNickname());
         }
-
+        if(token.length()<7){
+            return new JSONResult<String>("400", "未携带验证码!", "");
+        }
+        String realToken = BackendApplication.TokenServer.Verify(token.substring(7));
+        if(realToken==null){
+            return new JSONResult<String>("400","验证码过期","");
+        }
+        TokenData tokenData = JSON.parseObject(realToken, TokenData.class);
+        System.out.println(tokenData);
+        if (!Objects.equals(args.VerifyCode,tokenData.VerifyCode)||!Objects.equals(args.getMail(),tokenData.Email)){
+            return new JSONResult<String>("400", "验证码错误", "");
+        }
         String storedUserValue = JSON.toJSONString(userValue);
 
         if (BackendApplication.ColdData.Set(args.getMail(), storedUserValue))
@@ -86,7 +86,8 @@ public class UserController {
         System.out.print(storedUserValue.getPassword());
 
         if (Objects.equals(args.getPassword(), storedUserValue.getPassword())) {
-            reply.setToken(BackendApplication.TokenServer.SetToken(args.getMail()));
+            TokenData tokenData = new TokenData(args.getMail(), null, TokenData.Type.Login);
+            reply.setToken(BackendApplication.TokenServer.SetToken(tokenData));
             return new JSONResult<LoginReply>("200", "success", reply);
         } else {
             return new JSONResult<LoginReply>("400", "Wrong password!", reply);
@@ -96,8 +97,12 @@ public class UserController {
     @RequestMapping(value = "/checkToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<String> Check(@RequestHeader("Authorization") String token) {
         //token会带前缀bearer ，从第七个字符开始
-        if (BackendApplication.TokenServer.Verify(token.substring(7))) {
-            return new JSONResult<String>("200", "ok",null);
+        if(token.length()<7){
+            return new JSONResult<String>("400","no token",null);
+        }
+        String TokenData=BackendApplication.TokenServer.Verify(token.substring(7));
+        if (TokenData!=null) {
+            return new JSONResult<String>("200", "ok",TokenData);
         } else {
             return new JSONResult<String>("400", "wrong token",null);
         }
@@ -128,19 +133,106 @@ public class UserController {
         email.setMsg("欢迎注册Hemlock聊天室，您的验证码："+uid.toString());//设置发送内容
 //        email.send();//进行发送
         if (BackendApplication.ColdData.Set("Verification"+args.getMail(), storeVerificationCode) ){
-            email.send();
-            return new JSONResult<String>("200", "success", "");
-
+            //    email.send();
+            System.out.println(uid.toString());
+            //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
+            TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
+            String token=BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
+            return new JSONResult<String>("200", "success", token);
         }
 
         else
             return new JSONResult<String>("400", "fail", "");
 
 
-
-
-
     }
 }
 
 
+
+class LoginArgs {
+    private String mail;
+    private String password;
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+}
+
+class LoginReply {
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+}
+
+class MailArgs{
+    private String mail;
+
+    public String getMail() {
+        return mail;
+    }
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+}
+class JoinArgs {
+    private String mail;
+
+    private String password;
+
+    private String nickname;
+
+    private Boolean isManager;
+
+    public String VerifyCode; //验证码
+    public String getMail() {
+        return mail;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public Boolean getIsManager() {
+        return isManager;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public void setIsManager(Boolean isManager) {
+        this.isManager = isManager;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+}
