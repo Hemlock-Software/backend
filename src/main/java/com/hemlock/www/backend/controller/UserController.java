@@ -4,6 +4,10 @@ import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.Token.TokenData;
 import com.hemlock.www.backend.common.*;
 import com.hemlock.www.backend.BackendApplication;
+import com.hemlock.www.backend.reply.LoginReply;
+import com.hemlock.www.backend.request.JoinArgs;
+import com.hemlock.www.backend.request.LoginArgs;
+import com.hemlock.www.backend.request.MailArgs;
 import com.hemlock.www.backend.user.*;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -32,7 +36,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/join", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<String> Join(@RequestBody JoinArgs args,@RequestHeader("Authorization") String token) throws EmailException {
+    public JSONResult<String> Join(@RequestBody JoinArgs args, @RequestHeader("Authorization") String token) throws EmailException {
         if (args.getMail() == null || args.getIsManager() == null || args.getPassword() == null) {
             return new JSONResult<String>("400", "Missing field", "");
         }
@@ -54,8 +58,11 @@ public class UserController {
             return new JSONResult<String>("400","验证码过期","");
         }
         TokenData tokenData = JSON.parseObject(realToken, TokenData.class);
-        System.out.println(tokenData);
-        if (!Objects.equals(args.VerifyCode,tokenData.VerifyCode)||!Objects.equals(args.getMail(),tokenData.Email)){
+        System.out.println(tokenData.getVerifyCode());
+        System.out.println(tokenData.getEmail());
+        System.out.println(args.getMail());
+        System.out.println(args.getVerifyCode());
+        if (!Objects.equals(args.getVerifyCode(),tokenData.getVerifyCode())||!Objects.equals(args.getMail(),tokenData.getEmail())){
             return new JSONResult<String>("400", "验证码错误", "");
         }
         String storedUserValue = JSON.toJSONString(userValue);
@@ -149,90 +156,3 @@ public class UserController {
 }
 
 
-
-class LoginArgs {
-    private String mail;
-    private String password;
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-}
-
-class LoginReply {
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-}
-
-class MailArgs{
-    private String mail;
-
-    public String getMail() {
-        return mail;
-    }
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-}
-class JoinArgs {
-    private String mail;
-
-    private String password;
-
-    private String nickname;
-
-    private Boolean isManager;
-
-    public String VerifyCode; //验证码
-    public String getMail() {
-        return mail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public Boolean getIsManager() {
-        return isManager;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public void setIsManager(Boolean isManager) {
-        this.isManager = isManager;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-}

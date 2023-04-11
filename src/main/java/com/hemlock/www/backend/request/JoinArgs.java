@@ -9,7 +9,7 @@ public class JoinArgs {
 
     private Boolean isManager;
 
-
+    private String verifyCode; //验证码
     public String getMail() {
         return mail;
     }
@@ -26,6 +26,7 @@ public class JoinArgs {
         return isManager;
     }
 
+    public String getVerifyCode(){return verifyCode;}
     public void setMail(String mail) {
         this.mail = mail;
     }
@@ -41,4 +42,6 @@ public class JoinArgs {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void setVerifyCode(String verifyCode){this.verifyCode=verifyCode;}
 }

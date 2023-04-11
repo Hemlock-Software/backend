@@ -50,7 +50,7 @@ public class TokenManager {
     public String SetToken(TokenData tokenData){
         String result = null;
         long ttl=TTL;
-        if(tokenData.Usage== TokenData.Type.Register){
+        if(tokenData.getUsage()== TokenData.Type.Register){
             ttl=VerifyTTL;
         }
         try{
@@ -71,10 +71,26 @@ public class TokenManager {
             Claims result = TokenManager.decodeJWT(token);
             if(result!=null){
                 //获取TokenData和过期时间
-                System.out.println(result.get("body"));
-                System.out.println(result.get("exp"));
+                //System.out.println(result.get("body"));
+                //System.out.println(result.get("exp"));
             }
             return result.get("body").toString();
+        } catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
+
+    }
+
+    public String getTime(String token){
+        try{
+            Claims result = TokenManager.decodeJWT(token);
+            if(result!=null){
+                //获取TokenData和过期时间
+                //System.out.println(result.get("body"));
+                //System.out.println(result.get("exp"));
+            }
+            return result.get("exp").toString();
         } catch (Exception e){
             System.out.println(e);
             return null;
