@@ -3,6 +3,8 @@ package com.hemlock.www.backend.controller;
 import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.common.*;
 import com.hemlock.www.backend.BackendApplication;
+import com.hemlock.www.backend.reply.*;
+import com.hemlock.www.backend.request.*;
 import com.hemlock.www.backend.user.*;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -141,88 +143,4 @@ public class UserController {
     }
 }
 
-class LoginArgs {
-    private String mail;
-    private String password;
 
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-}
-
-class LoginReply {
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-}
-
-class MailArgs{
-    private String mail;
-
-    public String getMail() {
-        return mail;
-    }
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-}
-class JoinArgs {
-    private String mail;
-
-    private String password;
-
-    private String nickname;
-
-    private Boolean isManager;
-
-    public String getMail() {
-        return mail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public Boolean getIsManager() {
-        return isManager;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public void setIsManager(Boolean isManager) {
-        this.isManager = isManager;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-}
