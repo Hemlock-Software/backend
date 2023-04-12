@@ -116,7 +116,7 @@
                     <tr>
                         <td>token</td>
                         <td>string</td>
-                        <td>是</td>
+                        <td>否</td>
                         <td>用于注册认证的token，获取验证码时返回</td>
                     </tr>
         </table>
@@ -124,8 +124,8 @@
         <pre class="prettyprint lang-json">{
 	"mail":"string",
 	"password":"string",
-	"nickname":"string",
-	"isManager":"boolean",
+	"nickname":"string //用户昵称",
+	"isManager":"boolean //是否为管理员",
 	"verifyCode":"string //验证码"
 }</pre>
     <p><strong>返回结果</strong></p>
@@ -190,7 +190,7 @@
                     <tr>
                         <td>token</td>
                         <td>string</td>
-                        <td>是</td>
+                        <td>否</td>
                         <td>用于校对用户登录的token</td>
                     </tr>
         </table>
