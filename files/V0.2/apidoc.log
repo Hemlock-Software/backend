@@ -1,0 +1,24 @@
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find java src paths:  [D:\study\grade3.2\大规模实验\backend\src\main\java\]
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: project type not set, try to figure out...
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start find controllers in path : D:\study\grade3.2\大规模实验\backend\src\main\java\
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: find controller file : UserController.java
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to parse controller file : UserController.java
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to parse controller file : UserController.java
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: generate api docs start...
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: start to generate docs for controller file : D:\study\grade3.2\大规模实验\backend\src\main\java\com\hemlock\www\backend\controller\UserController.java
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: success to generate docs for controller file : D:\study\grade3.2\大规模实验\backend\src\main\java\com\hemlock\www\backend\controller\UserController.java
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: generate index start !!!
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: generate index done !!!
+4月 12, 2023 2:56:30 下午 io.github.yedaxia.apidocs.LogUtils info
+信息: info: generate api docs done !!!

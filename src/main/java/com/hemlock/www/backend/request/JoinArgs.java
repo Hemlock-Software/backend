@@ -5,11 +5,12 @@ public class JoinArgs {
 
     private String password;
 
-    private String nickname;
+    private String nickname; //用户昵称
 
-    private Boolean isManager;
+    private Boolean isManager;  //是否为管理员
 
     private String verifyCode; //验证码
+
     public String getMail() {
         return mail;
     }
@@ -26,7 +27,10 @@ public class JoinArgs {
         return isManager;
     }
 
-    public String getVerifyCode(){return verifyCode;}
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
     public void setMail(String mail) {
         this.mail = mail;
     }
@@ -43,5 +47,7 @@ public class JoinArgs {
         this.nickname = nickname;
     }
 
-    public void setVerifyCode(String verifyCode){this.verifyCode=verifyCode;}
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
 }
