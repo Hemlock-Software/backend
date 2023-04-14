@@ -81,6 +81,9 @@ docker rmi 镜像id
 
 docker build -t hemlock:v0.1 . #更新为新的镜像
 docker run -d -p 15100:15100 --name hemlockbackend hemlock:v0.1 # 生成新的镜像
+
+docker save -o hemlock.tar hemlock:v0.1# 导出为压缩包
+docker load < hemlock.tar# 把压缩包解压
 ```
 
 
