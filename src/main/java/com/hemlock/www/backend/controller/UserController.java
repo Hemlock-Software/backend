@@ -151,7 +151,7 @@ public class UserController {
         VerificationCode verificationCode = new VerificationCode(uid.toString());
         String storeVerificationCode = JSON.toJSONString(verificationCode);
 
-
+        int type = args.getType();
         for (int i=0;i<1;i++){
             HtmlEmail email=new HtmlEmail();//创建一个HtmlEmail实例对象
             email.setHostName("smtp.qq.com");
@@ -159,11 +159,17 @@ public class UserController {
             email.addTo(args.getMail());
             email.setFrom("2530250978@qq.com","Hemlock");
             email.setAuthentication("2530250978@qq.com","ppgsvwubatmodjad");
-            email.setSubject("铁树注册");//设置发送主题
-            email.setMsg("欢迎注册Hemlock聊天室，您的验证码："+uid.toString());//设置发送内容
+            if(type==1){
+                email.setSubject("铁树注册");//设置发送主题
+                email.setMsg("欢迎注册Hemlock聊天室，您的验证码："+uid.toString());//设置发送内容
+            }
+            else if (type==2){
+                email.setSubject("铁树聊天室");//设置发送主题
+                email.setMsg("您正在找回Hemlock聊天室的密码，您的验证码："+uid.toString());//设置发送内容
+            }
+
             email.send();
         }
-
 
 
         if (BackendApplication.ColdData.Set("Verification"+args.getMail(), storeVerificationCode) ){
