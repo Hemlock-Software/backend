@@ -27,6 +27,7 @@ import java.util.Random;
 @RequestMapping("/user")
 public class UserController {
 
+
     @RequestMapping(value = "/hello", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<User> Hello() {
         User guest = new User("3052791719@qq.com", "ly", "123", true);
@@ -35,6 +36,12 @@ public class UserController {
     }
 
 
+    /**
+     * 用户注册
+     * @param args 请求体参数
+     * @param token 用于注册认证的token，获取验证码时返回
+     *
+     */
     @RequestMapping(value = "/join", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<String> Join(@RequestBody JoinArgs args, @RequestHeader("Authorization") String token) throws EmailException {
         if (args.getMail() == null || args.getIsManager() == null || args.getPassword() == null) {
@@ -58,10 +65,10 @@ public class UserController {
             return new JSONResult<String>("400","验证码过期","");
         }
         TokenData tokenData = JSON.parseObject(realToken, TokenData.class);
-        System.out.println(tokenData.getVerifyCode());
-        System.out.println(tokenData.getEmail());
-        System.out.println(args.getMail());
-        System.out.println(args.getVerifyCode());
+//        System.out.println(tokenData.getVerifyCode());
+//        System.out.println(tokenData.getEmail());
+//        System.out.println(args.getMail());
+//        System.out.println(args.getVerifyCode());
         if (!Objects.equals(args.getVerifyCode(),tokenData.getVerifyCode())||!Objects.equals(args.getMail(),tokenData.getEmail())){
             return new JSONResult<String>("400", "验证码错误", "");
         }
@@ -75,6 +82,11 @@ public class UserController {
 
     }
 
+    /**
+     * 用户登录
+     * @param args 登录请求体参数
+     *
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<LoginReply> Login(@RequestBody LoginArgs args) {
         LoginReply reply = new LoginReply();
@@ -90,7 +102,7 @@ public class UserController {
 
         String storedUserJson = BackendApplication.ColdData.Get(args.getMail());
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
-        System.out.print(storedUserValue.getPassword());
+//        System.out.print(storedUserValue.getPassword());
 
         if (Objects.equals(args.getPassword(), storedUserValue.getPassword())) {
             TokenData tokenData = new TokenData(args.getMail(), null, TokenData.Type.Login);
@@ -101,6 +113,10 @@ public class UserController {
         }
     }
 
+    /**
+     * 校对token
+     * @param token 用于校对用户登录的token
+     */
     @RequestMapping(value = "/checkToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<String> Check(@RequestHeader("Authorization") String token) {
         //token会带前缀bearer ，从第七个字符开始
@@ -116,6 +132,11 @@ public class UserController {
 
     }
 
+    /**
+     * 发送用户注册验证的邮件
+     * @param args 发送右键的请求体
+     * @throws EmailException 发送邮件的异常
+     */
     @RequestMapping(value = "/sendMail", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<String> sendVerificationCode (@RequestBody MailArgs args) throws EmailException {
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
@@ -152,8 +173,8 @@ public class UserController {
 
 
         if (BackendApplication.ColdData.Set("Verification"+args.getMail(), storeVerificationCode) ){
-            //    email.send();
-            System.out.println(uid.toString());
+            //email.send();
+//            System.out.println(uid.toString());
             //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
             TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
             String token=BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
