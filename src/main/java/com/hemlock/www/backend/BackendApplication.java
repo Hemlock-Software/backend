@@ -28,7 +28,7 @@ public class BackendApplication {
         ColdData = new SingleRedisIO("10.214.241.121",15000);
         HotData = new ClusterRedisIO("10.214.241.121",15010);
         TokenServer = new TokenManager();
-        ZKServer = new ZKManager();
+        //ZKServer = new ZKManager();
         SpringApplication.run(BackendApplication.class, args);
     }
 
