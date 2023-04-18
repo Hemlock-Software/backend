@@ -25,11 +25,9 @@ import java.util.Objects;
 
 import java.util.Random;
 
-<<<<<<< HEAD
 
-=======
 @CrossOrigin(methods={RequestMethod.POST})
->>>>>>> 422b0e38c064063499e5ea79e696b0949aecc0fe
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -67,13 +65,7 @@ public class UserController {
             userValue.setNickname(args.getNickname());
         }
         if (token.length() < 7) {
-<<<<<<< HEAD
-            return new JSONResult<String>("400", "未携带验证码!", "");
-        }
-        String realToken = BackendApplication.TokenServer.Verify(token.substring(7));
-        if (realToken == null) {
-            return new JSONResult<String>("400", "验证码过期", "");
-=======
+
 //            return new JSONResult<String>("400", "未携带验证码!", "");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No verification code is carried!");
         }
@@ -81,7 +73,7 @@ public class UserController {
         if (realToken == null) {
 //            return new JSONResult<String>("400", "验证码过期", "");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Verification code expired!");
->>>>>>> 422b0e38c064063499e5ea79e696b0949aecc0fe
+
         }
         TokenData tokenData = JSON.parseObject(realToken, TokenData.class);
 //        System.out.println(tokenData.getVerifyCode());
@@ -89,12 +81,10 @@ public class UserController {
 //        System.out.println(args.getMail());
 //        System.out.println(args.getVerifyCode());
         if (!Objects.equals(args.getVerifyCode(), tokenData.getVerifyCode()) || !Objects.equals(args.getMail(), tokenData.getEmail())) {
-<<<<<<< HEAD
-            return new JSONResult<String>("400", "验证码错误", "");
-=======
+
 //            return new JSONResult<String>("400", "验证码错误", "");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Verification code error!");
->>>>>>> 422b0e38c064063499e5ea79e696b0949aecc0fe
+
         }
         String storedUserValue = JSON.toJSONString(userValue);
 
@@ -168,19 +158,13 @@ public class UserController {
      * @throws EmailException 发送邮件的异常
      */
     @RequestMapping(value = "/sendMail", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-<<<<<<< HEAD
-    public JSONResult<String> sendVerificationCode(@RequestBody MailArgs args) throws EmailException {
-        Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
-        if (storedKeyNum > 0) {
-            return new JSONResult<String>("400", "This mail has been used!", "");
-        }
-=======
+
     public ResponseEntity<String> sendVerificationCode(@RequestBody MailArgs args) throws EmailException {
 //        Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
 //        if (storedKeyNum > 0) {
 //            return new JSONResult<String>("400", "This mail has been used!", "");
 //        }
->>>>>>> 422b0e38c064063499e5ea79e696b0949aecc0fe
+
         StringBuffer uid = new StringBuffer();
         Random rd = new SecureRandom();
         for (int i = 0; i < 6; i++) {
@@ -190,7 +174,7 @@ public class UserController {
         String storeVerificationCode = JSON.toJSONString(verificationCode);
 
         int type = args.getType();
-<<<<<<< HEAD
+
         try {
             for (int i = 0; i < 1; i++) {
                 HtmlEmail email = new HtmlEmail();//创建一个HtmlEmail实例对象
@@ -206,22 +190,7 @@ public class UserController {
                     email.setSubject("铁树聊天室");//设置发送主题
                     email.setMsg("您正在找回Hemlock聊天室的密码，您的验证码：" + uid.toString());//设置发送内容
                 }
-=======
-        for (int i = 0; i < 1; i++) {
-            HtmlEmail email = new HtmlEmail();//创建一个HtmlEmail实例对象
-            email.setHostName("smtp.qq.com");
-            email.setCharset("utf-8");
-            email.addTo(args.getMail());
-            email.setFrom("2530250978@qq.com", "Hemlock");
-            email.setAuthentication("2530250978@qq.com", "ppgsvwubatmodjad");
-            if (type == 1) {
-                email.setSubject("铁树注册");//设置发送主题
-                email.setMsg("欢迎注册Hemlock聊天室，您的验证码：" + uid.toString());//设置发送内容
-            } else if (type == 2) {
-                email.setSubject("铁树聊天室");//设置发送主题
-                email.setMsg("您正在找回Hemlock聊天室的密码，您的验证码：" + uid.toString());//设置发送内容
-            }
->>>>>>> 422b0e38c064063499e5ea79e696b0949aecc0fe
+
 
                 email.send();
             }
@@ -238,14 +207,7 @@ public class UserController {
             //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
             TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
             String token = BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
-<<<<<<< HEAD
-            return new JSONResult<String>("200", "success", token);
 
-        } else
-            return new JSONResult<String>("400", "fail", "");
-
-
-=======
 //            return new JSONResult<String>("200", "success", token);
             return ResponseEntity.status(HttpStatus.OK).body(token);
 
@@ -303,7 +265,7 @@ public class UserController {
         else
 //            return new JSONResult<String>("400", "fail", "");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
->>>>>>> 422b0e38c064063499e5ea79e696b0949aecc0fe
+
     }
 }
 
