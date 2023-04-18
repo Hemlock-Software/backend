@@ -1,5 +1,8 @@
 package com.hemlock.www.backend.common;
 
+import lombok.Data;
+
+@Data
 public class JSONResult<T> {
     private String code;
     private String msg;
@@ -21,26 +24,26 @@ public class JSONResult<T> {
         this.data = data;
     }
 
-    public String getMsg () {
-        return this.msg;
-    }
-
-    public String getCode() {
-        return this.code;
-    }
-
-    public T getData() {
-        return this.data;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
+//    public String getMsg () {
+//        return this.msg;
+//    }
+//
+//    public String getCode() {
+//        return this.code;
+//    }
+//
+//    public T getData() {
+//        return this.data;
+//    }
+//
+//    public void setCode(String code) {
+//        this.code = code;
+//    }
+//    public void setMsg(String msg) {
+//        this.msg = msg;
+//    }
+//
+//    public void setData(T data) {
+//        this.data = data;
+//    }
 }

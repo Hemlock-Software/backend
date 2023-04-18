@@ -57,6 +57,9 @@
                     <a class="catalog-item" href="com_hemlock_www_backend_controller_UserController.html#sendVerificationCode">
                         发送用户注册验证的邮件
                     </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_UserController.html#findPassword">
+                        帮助用户找回密码
+                    </a>
             </div>
         </div>
 </div>    </div>
@@ -129,18 +132,7 @@
 	"verifyCode":"string //验证码"
 }</pre>
     <p><strong>返回结果</strong></p>
-    <pre class="prettyprint lang-json">{
-	"code":"string",
-	"msg":"string",
-	"data":"string"
-}</pre>
-        <div class="form-group">
-            <a type="button" class="btn btn-sm btn-default" href="javaCodes/com_hemlock_www_backend_controller_UserController_Join_JSONResult.html"><i
-                        class="fa fa-android" aria-hidden="true"></i> Android Model</a>
-            <a type="button" class="btn btn-sm btn-default" href="iosCodes/com_hemlock_www_backend_controller_UserController_Join_JSONResult.html"><i class="fa fa-apple"
-                                                                                                 aria-hidden="true"></i>
-                iOS Model</a>
-        </div>
+    <pre class="prettyprint lang-json">string{}</pre>
                         </div>
                         <hr>
                         <div class="action-item">
@@ -156,20 +148,7 @@
 	"password":"string"
 }</pre>
     <p><strong>返回结果</strong></p>
-    <pre class="prettyprint lang-json">{
-	"code":"string",
-	"msg":"string",
-	"data":{
-		"token":"string"
-	}
-}</pre>
-        <div class="form-group">
-            <a type="button" class="btn btn-sm btn-default" href="javaCodes/com_hemlock_www_backend_controller_UserController_Login_JSONResult.html"><i
-                        class="fa fa-android" aria-hidden="true"></i> Android Model</a>
-            <a type="button" class="btn btn-sm btn-default" href="iosCodes/com_hemlock_www_backend_controller_UserController_Login_JSONResult.html"><i class="fa fa-apple"
-                                                                                                 aria-hidden="true"></i>
-                iOS Model</a>
-        </div>
+    <pre class="prettyprint lang-json">string{}</pre>
                         </div>
                         <hr>
                         <div class="action-item">
@@ -222,18 +201,24 @@
 	"type":"int //1是注册，2是找回密码"
 }</pre>
     <p><strong>返回结果</strong></p>
-    <pre class="prettyprint lang-json">{
-	"code":"string",
-	"msg":"string",
-	"data":"string"
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                        <div class="action-item">
+<h2 id="findPassword"><a href="#">帮助用户找回密码 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/user/findPassword</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"mail":"string",
+	"password":"string //新的密码",
+	"verifyCode":"string //验证码"
 }</pre>
-        <div class="form-group">
-            <a type="button" class="btn btn-sm btn-default" href="javaCodes/com_hemlock_www_backend_controller_UserController_sendVerificationCode_JSONResult.html"><i
-                        class="fa fa-android" aria-hidden="true"></i> Android Model</a>
-            <a type="button" class="btn btn-sm btn-default" href="iosCodes/com_hemlock_www_backend_controller_UserController_sendVerificationCode_JSONResult.html"><i class="fa fa-apple"
-                                                                                                 aria-hidden="true"></i>
-                iOS Model</a>
-        </div>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
                         </div>
                         <hr>
                     </div>
@@ -254,6 +239,7 @@
             {name: 'UserController.用户登录', url: 'com_hemlock_www_backend_controller_UserController.html#Login'},
             {name: 'UserController.校对token', url: 'com_hemlock_www_backend_controller_UserController.html#Check'},
             {name: 'UserController.发送用户注册验证的邮件', url: 'com_hemlock_www_backend_controller_UserController.html#sendVerificationCode'},
+            {name: 'UserController.帮助用户找回密码', url: 'com_hemlock_www_backend_controller_UserController.html#findPassword'},
     ];
 
 
