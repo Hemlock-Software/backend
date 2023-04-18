@@ -23,7 +23,6 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">V1.0<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                            <li><a href="../V0.2/index.html">V0.2</a></li>
                     </ul>
                 </li>
             </ul>
@@ -117,7 +116,7 @@
                     <tr>
                         <td>token</td>
                         <td>string</td>
-                        <td>是</td>
+                        <td>否</td>
                         <td>用于注册认证的token，获取验证码时返回</td>
                     </tr>
         </table>
@@ -191,7 +190,7 @@
                     <tr>
                         <td>token</td>
                         <td>string</td>
-                        <td>是</td>
+                        <td>否</td>
                         <td>用于校对用户登录的token</td>
                     </tr>
         </table>
@@ -219,7 +218,8 @@
 </p>
         <p><strong>请求体</strong> <span class="badge">application/json</span></p>
         <pre class="prettyprint lang-json">{
-	"mail":"string"
+	"mail":"string",
+	"type":"int //1是注册，2是找回密码"
 }</pre>
     <p><strong>返回结果</strong></p>
     <pre class="prettyprint lang-json">{
