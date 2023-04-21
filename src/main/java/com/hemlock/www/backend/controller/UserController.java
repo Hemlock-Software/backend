@@ -114,7 +114,7 @@ public class UserController {
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
         if (storedKeyNum == 0) {
 //            return new JSONResult<LoginReply>("400", "No such mail!", reply);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This mail has been used!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mail or Password Error!");
         }
 
         String storedUserJson = BackendApplication.ColdData.Get(args.getMail());
@@ -127,7 +127,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body(BackendApplication.TokenServer.SetToken(tokenData));
 //            return new JSONResult<LoginReply>("200", "success", reply);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password error!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mail or Password Error!");
         }
     }
 
