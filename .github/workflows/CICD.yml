@@ -25,11 +25,17 @@ jobs:
     - name: Build and Deploy
       run: mvn -B package --file pom.xml
     
-#       env:
-#         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-#         BRANCH: gh-pages
-#         FOLDER: build
-#         BUILD_SCRIPT: npm install && npm run build
+    - name: scp
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: ./target/backend-0.0.1-SNAPSHOT.jar
+        remote: /home/zjulss1/code/backend-0.0.1-SNAPSHOT.jar
+        host: '10.214.241.121'
+        username: 'zjulss1'
+        password: 'hemlock1'
+        port: '22'
+
+
   
     
     
