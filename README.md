@@ -84,6 +84,11 @@ docker run -d -p 15100:15100 --name hemlockbackend hemlock:v0.1 # 生成新的�
 
 docker save -o hemlock.tar hemlock:v0.1# 导出为压缩包
 docker load < hemlock.tar# 把压缩包解压
+
+
+#一种更快的部署方式：把新版jar上传至服务器，然后直接把jar丢进容器里
+docker cp /home/code/backend-0.0.1-SNAPSHOT.jar c35:/data  # 直接把jar扔进容器里
+docker exec c35 kill xxxxx # 可能需要先kill掉容器里的进程
 ```
 
 
@@ -94,13 +99,13 @@ docker load < hemlock.tar# 把压缩包解压
 
 BackendApplication中这一段代码是在项目中生成后端接口文档的，默认注释掉了，如果想使用记得改成自己的路径！
 
-```java
-        DocsConfig config = new DocsConfig();
-        config.setProjectPath("D:\\study\\grade3.2\\大规模实验\\backend"); // 项目根目录
-        config.setProjectName("backend"); // 项目名称
-        config.setApiVersion("V0.2");       // 声明该API的版本
-        config.setDocsPath("D:\\study\\grade3.2\\大规模实验\\backend\\files"); // 生成API 文档所在目录
-        config.setAutoGenerate(Boolean.TRUE);  // 配置自动生成
-        Docs.buildHtmlDocs(config); // 执行生成文档
+```
+DocsConfig config = new DocsConfig();
+config.setProjectPath("D:\\study\\grade3.2\\大规模实验\\backend"); // 项目根目录
+config.setProjectName("backend"); // 项目名称
+config.setApiVersion("V0.2");       // 声明该API的版本
+config.setDocsPath("D:\\study\\grade3.2\\大规模实验\\backend\\files"); // 生成API 文档所在目录
+config.setAutoGenerate(Boolean.TRUE);  // 配置自动生成
+Docs.buildHtmlDocs(config); // 执行生成文档
 ```
 
