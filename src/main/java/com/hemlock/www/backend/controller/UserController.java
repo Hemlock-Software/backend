@@ -11,6 +11,7 @@ import com.hemlock.www.backend.request.LoginArgs;
 import com.hemlock.www.backend.request.MailArgs;
 import com.hemlock.www.backend.user.*;
 import io.netty.handler.codec.MessageAggregationException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,21 @@ public class UserController {
         return res;
     }
 
+    @RequestMapping(value = "/GetToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> GetToken() {
 
+        TokenData tokenData = new TokenData("this is test token data", null, TokenData.Type.Login);
+        return ResponseEntity.status(HttpStatus.OK).body(BackendApplication.TokenServer.SetToken(tokenData));
+
+    }
+
+    @RequestMapping(value = "/testToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public JSONResult<User> testToken(HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        User guest = new User(email, "ly", "123", true);
+        JSONResult<User> res = new JSONResult<>("200", "success", guest);
+        return res;
+    }
     /**
      * 用户注册
      *
