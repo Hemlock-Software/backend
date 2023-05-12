@@ -20,10 +20,11 @@ public class Interceptor implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
-                .addPathPatterns("/user/join")//拦截路径
-                .addPathPatterns("/user/testToken")//拦截路径
-                .excludePathPatterns("/user/GetToken")
-                .excludePathPatterns("/user/login");//放行路径
+                .addPathPatterns("/user/join")      //拦截路径
+                .addPathPatterns("/user/test-token")//拦截路径
+                .addPathPatterns("/room/create-room")
+                .excludePathPatterns("/user/get-token")
+                .excludePathPatterns("/user/login"); //放行路径
     }
 
 

@@ -41,15 +41,14 @@ public class UserController {
         return res;
     }
 
-    @RequestMapping(value = "/GetToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/get-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> GetToken() {
-
         TokenData tokenData = new TokenData("this is test token data", null, TokenData.Type.Login);
         return ResponseEntity.status(HttpStatus.OK).body(BackendApplication.TokenServer.SetToken(tokenData));
 
     }
 
-    @RequestMapping(value = "/testToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/test-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public JSONResult<User> testToken(HttpServletRequest request) {
         String email = (String) request.getAttribute("email");
         User guest = new User(email, "ly", "123", true);
