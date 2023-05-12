@@ -45,11 +45,9 @@ public class RoomController {
         room.addMember(owner);
         room.setPassword(args.getPassword());
         room.setMaxUsers(args.getMaxUsers());
-        int roomSeq = Integer.parseInt(BackendApplication.ColdData.Get("roomSeq")) ;
+        Long roomSeq = BackendApplication.ColdData.Increment("roomSeq") ;
         DecimalFormat df = new DecimalFormat(STR_FORMAT);
         String roomNum = df.format(roomSeq);
-        roomSeq++;
-        BackendApplication.ColdData.Set("roomSeq", Integer.toString(roomSeq));
 
 
         String storedRoomJson = JSON.toJSONString(room);
