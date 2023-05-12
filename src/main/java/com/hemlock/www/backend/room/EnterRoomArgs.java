@@ -3,8 +3,9 @@ package com.hemlock.www.backend.room;
 import lombok.Data;
 @Data
 public class EnterRoomArgs {
-    private String name;
-    private String owner; //房主邮箱;后续可以改动
+    private String name;  //用户信息，后续要删除
+    private String ID;    //聊天室的ID
+    private String password;//聊天室密码
 
 //    public EnterRoomArgs(String name) {
 //        this.name = name;

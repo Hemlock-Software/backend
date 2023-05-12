@@ -11,7 +11,8 @@ import java.util.*;
 public class Room {
     private String ID;                   //Room序号
     private String name;                 //Room房间名
-    private Member owner;                  //Room房主
+    private Member owner;                 //Room房主
+    private int maxUsers;                 ///Room最大人数
     private ArrayList<Member> members = new ArrayList<>();     //Room成员
 //    private ArrayList<Message> messages = new ArrayList<>(); //Room消息集合
 
