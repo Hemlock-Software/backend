@@ -5,13 +5,11 @@ import lombok.Data;
 
 @Data
 public class RoomHot {
-    private String ID;                   //Room序号
-
-    public String getLastMessageID(){
+    public String getLastMessageID(String ID){
         return BackendApplication.HotData.Get(ID);
     }
 
-    public String incrementLastMessageID(){
+    public String incrementLastMessageID(String ID){
         return BackendApplication.HotData.Increment(ID).toString();
     }
 }
