@@ -45,6 +45,11 @@ public class ClusterRedisIO {
         return syncCommands.exists(key);
     }
 
+    public Long Increment(String key){
+        RedisClusterCommands<String, String> syncCommands = myConnection.sync();
+        return syncCommands.incr(key);
+    }
+
     public Boolean Expire(String key,Duration time){
         RedisClusterCommands<String, String> syncCommands = myConnection.sync();
         return syncCommands.expire(key,time);

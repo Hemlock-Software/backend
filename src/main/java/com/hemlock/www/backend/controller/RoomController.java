@@ -2,11 +2,7 @@ package com.hemlock.www.backend.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.BackendApplication;
-import com.hemlock.www.backend.Redis.SingleRedisIO;
-import com.hemlock.www.backend.request.MailArgs;
-import com.hemlock.www.backend.user.User;
 import com.hemlock.www.backend.user.UserValue;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +31,7 @@ public class RoomController {
 
         Member owner = new Member(args.getUser(),storedUserValue.getNickname());
 
-        RoomValue room = new RoomValue();
+        RoomValueCold room = new RoomValueCold();
         room.setName(args.getName());
         room.setOwner(owner);
         room.addMember(owner);
