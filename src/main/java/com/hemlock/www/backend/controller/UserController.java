@@ -33,14 +33,6 @@ import java.util.Random;
 @RequestMapping("/user")
 public class UserController {
 
-
-    @RequestMapping(value = "/hello", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<User> Hello() {
-        User guest = new User("3052791719@qq.com", "ly", "123", true);
-        JSONResult<User> res = new JSONResult<>("200", "success", guest);
-        return res;
-    }
-
     @RequestMapping(value = "/get-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> GetToken() {
         TokenData tokenData = new TokenData("this is test token data", null, TokenData.Type.Login);
@@ -48,13 +40,6 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/test-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<User> testToken(HttpServletRequest request) {
-        String email = (String) request.getAttribute("email");
-        User guest = new User(email, "ly", "123", true);
-        JSONResult<User> res = new JSONResult<>("200", "success", guest);
-        return res;
-    }
     /**
      * 用户注册
      *

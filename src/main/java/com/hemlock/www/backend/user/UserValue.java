@@ -1,6 +1,7 @@
 package com.hemlock.www.backend.user;
 
 public class UserValue {
+//    private String mail;
     private String nickname;
     private String password;
     private Boolean isManager;

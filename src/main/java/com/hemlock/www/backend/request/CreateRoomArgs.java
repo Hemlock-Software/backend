@@ -1,14 +1,11 @@
-package com.hemlock.www.backend.room;
+package com.hemlock.www.backend.request;
 
-import com.hemlock.www.backend.user.User;
 import lombok.Data;
 
 @Data
 public class CreateRoomArgs {
-//    private String user;     //房主的邮箱
     private String name;     //房间名称
     private int maxUsers;    //聊天室最大人数
     private String password; //聊天室密码
-
 
 }

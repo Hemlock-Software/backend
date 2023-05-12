@@ -2,9 +2,10 @@ package com.hemlock.www.backend.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.BackendApplication;
+import com.hemlock.www.backend.request.CreateRoomArgs;
+import com.hemlock.www.backend.request.EnterRoomArgs;
 import com.hemlock.www.backend.user.UserValue;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class RoomController {
 
     @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> EnterRoom(@RequestBody EnterRoomArgs args) {
+        // 验证
+
+        // 建立socket
+
+
         return ResponseEntity.status(HttpStatus.OK).body(args.getName());
     }
 

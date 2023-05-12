@@ -1,4 +1,4 @@
-package com.hemlock.www.backend.room;
+package com.hemlock.www.backend.request;
 
 import lombok.Data;
 @Data

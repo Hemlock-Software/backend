@@ -14,8 +14,4 @@ public class Message {
     private String content;  //消息内容
     private Time time;       //发送时间
     private User sender;     //消息发送者
-
-//    public Message getMessage(String roomID,String messageID){
-//
-//    }
 }

@@ -1,9 +1,6 @@
 package com.hemlock.www.backend.room;
 
-import com.hemlock.www.backend.user.User;
 import lombok.Data;
-
-import java.util.ArrayList;
 
 @Data
 public class MessageKey {
