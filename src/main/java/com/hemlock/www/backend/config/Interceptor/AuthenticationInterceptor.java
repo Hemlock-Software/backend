@@ -35,6 +35,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         token=token.substring(7);
         String realToken = tokenManager.Verify(token);
         if(realToken==null){
+            Response.setStatus(400);
             PrintWriter printWriter = Response.getWriter();
             printWriter.write("{\"message\":\"Unauthorized: Wrong token.\"}");
             printWriter.flush();
