@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class MessageKey {
     private String roomID;                   //Room序号
-    private String messageID;               //Message序号
+    private int messageID;               //Message序号
 }

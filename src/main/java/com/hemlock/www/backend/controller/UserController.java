@@ -130,26 +130,6 @@ public class UserController {
     }
 
     /**
-     * 校对token
-     *
-     * @param token 用于校对用户登录的token
-     */
-    @RequestMapping(value = "/check-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<String> Check(@RequestHeader("Authorization") String token) {
-        //token会带前缀bearer ，从第七个字符开始
-        if (token.length() < 7) {
-            return new JSONResult<String>("400", "no token", null);
-        }
-        String TokenData = BackendApplication.TokenServer.Verify(token.substring(7));
-        if (TokenData != null) {
-            return new JSONResult<String>("200", "ok", TokenData);
-        } else {
-            return new JSONResult<String>("400", "wrong token", null);
-        }
-
-    }
-
-    /**
      * 发送用户注册验证的邮件
      *
      * @param args 发送右键的请求体
