@@ -4,7 +4,9 @@ import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.BackendApplication;
 import com.hemlock.www.backend.request.CreateRoomArgs;
 import com.hemlock.www.backend.request.EnterRoomArgs;
+import com.hemlock.www.backend.request.GetRoomInfoArgs;
 import com.hemlock.www.backend.request.TestSendMsgArgs;
+import com.hemlock.www.backend.user.UserStoredRoomValue;
 import com.hemlock.www.backend.user.UserValue;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Objects;
 
 @CrossOrigin(methods = {RequestMethod.POST})
@@ -91,6 +94,23 @@ public class RoomController {
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 
         return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(storedUserValue.getRoomList()));
+    }
+
+    @RequestMapping(value = "/getRoomInfo", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> GetRoomInfo(HttpServletRequest request, @RequestBody GetRoomInfoArgs args) {
+        String user = (String) request.getAttribute("email");
+        String storedUserJson = BackendApplication.ColdData.Get(user);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        //判断下一个元素之后有值
+        for (UserStoredRoomValue userStoredRoomValue : storedUserValue.getRoomList()) {
+            if (userStoredRoomValue.getID().equals(args.getRoomID())) {
+                String jsonData = BackendApplication.ColdData.Get(userStoredRoomValue.getID());
+                return ResponseEntity.status(HttpStatus.OK).body(jsonData);
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The Room is not in your RoomList");
     }
 
     @RequestMapping(value = "/sendMessageTest", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")

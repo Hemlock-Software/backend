@@ -19,7 +19,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class Interceptor implements WebMvcConfigurer {
     @Resource
     AuthenticationInterceptor authenticationInterceptor;
-    CORSInterceptor cors;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
