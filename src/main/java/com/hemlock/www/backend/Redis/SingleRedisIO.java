@@ -45,6 +45,11 @@ public class SingleRedisIO {
         return syncCommands.exists(key);
     }
 
+    public Long Increment(String key){
+        RedisCommands<String, String> syncCommands = myConnection.sync();
+        return syncCommands.incr(key);
+    }
+
     public Boolean Expire(String key,Duration time){
         RedisCommands<String, String> syncCommands = myConnection.sync();
         return syncCommands.expire(key,time);

@@ -11,6 +11,7 @@ import com.hemlock.www.backend.request.LoginArgs;
 import com.hemlock.www.backend.request.MailArgs;
 import com.hemlock.www.backend.user.*;
 import io.netty.handler.codec.MessageAggregationException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.http.HttpStatus;
@@ -26,20 +27,18 @@ import java.util.Objects;
 import java.util.Random;
 
 
-@CrossOrigin(methods={RequestMethod.POST})
+@CrossOrigin(methods = {RequestMethod.POST})
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
+    @RequestMapping(value = "/get-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> GetToken() {
+        TokenData tokenData = new TokenData("this is test token data", null, TokenData.Type.Login);
+        return ResponseEntity.status(HttpStatus.OK).body(BackendApplication.TokenServer.SetToken(tokenData));
 
-    @RequestMapping(value = "/hello", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<User> Hello() {
-        User guest = new User("3052791719@qq.com", "ly", "123", true);
-        JSONResult<User> res = new JSONResult<>("200", "success", guest);
-        return res;
     }
-
 
     /**
      * 用户注册
@@ -65,7 +64,6 @@ public class UserController {
             userValue.setNickname(args.getNickname());
         }
         if (token.length() < 7) {
-
 //            return new JSONResult<String>("400", "未携带验证码!", "");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No verification code is carried!");
         }
@@ -132,33 +130,12 @@ public class UserController {
     }
 
     /**
-     * 校对token
-     *
-     * @param token 用于校对用户登录的token
-     */
-    @RequestMapping(value = "/checkToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<String> Check(@RequestHeader("Authorization") String token) {
-        //token会带前缀bearer ，从第七个字符开始
-        if (token.length() < 7) {
-            return new JSONResult<String>("400", "no token", null);
-        }
-        String TokenData = BackendApplication.TokenServer.Verify(token.substring(7));
-        if (TokenData != null) {
-            return new JSONResult<String>("200", "ok", TokenData);
-        } else {
-            return new JSONResult<String>("400", "wrong token", null);
-        }
-
-    }
-
-    /**
      * 发送用户注册验证的邮件
      *
      * @param args 发送右键的请求体
      * @throws EmailException 发送邮件的异常
      */
-    @RequestMapping(value = "/sendMail", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-
+    @RequestMapping(value = "/send-mail", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> sendVerificationCode(@RequestBody MailArgs args) throws EmailException {
 //        Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
 //        if (storedKeyNum > 0) {
@@ -224,8 +201,8 @@ public class UserController {
      *
      * @param args 找回密码的参数
      */
-    @RequestMapping(value = "/findPassword", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> findPassword(@RequestBody FindPasswordArgs args,@RequestHeader("Authorization") String token) {
+    @RequestMapping(value = "/find-password", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> findPassword(@RequestBody FindPasswordArgs args, @RequestHeader("Authorization") String token) {
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
         if (storedKeyNum == 0) {
 //            return new JSONResult<String>("400", "This mail has never been used!", "");

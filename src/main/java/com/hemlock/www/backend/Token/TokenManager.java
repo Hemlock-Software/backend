@@ -76,7 +76,7 @@ public class TokenManager {
             }
             return result.get("body").toString();
         } catch (Exception e){
-            System.out.println(e);
+            //System.out.println(e);
             return null;
         }
 

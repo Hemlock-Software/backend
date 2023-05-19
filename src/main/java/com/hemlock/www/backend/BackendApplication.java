@@ -7,9 +7,11 @@ import com.hemlock.www.backend.Token.TokenManager;
 import com.hemlock.www.backend.ZooKeeper.ZKManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 
 @SpringBootApplication
+//@ComponentScan (basePackages= {"com.hemlock.wwww.backend"})
 public class BackendApplication {
     public static SingleRedisIO ColdData = null;
     public static ClusterRedisIO HotData = null;
