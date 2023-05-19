@@ -126,7 +126,9 @@ public class UserController {
         if (Objects.equals(args.getPassword(), storedUserValue.getPassword())) {
             TokenData tokenData = new TokenData(args.getMail(), null, TokenData.Type.Login);
             reply.setToken(BackendApplication.TokenServer.SetToken(tokenData));
-            return ResponseEntity.status(HttpStatus.OK).body(BackendApplication.TokenServer.SetToken(tokenData));
+            reply.setIsManager(storedUserValue.getIsManager());
+            reply.setNickname(storedUserValue.getNickname());
+            return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(reply));
 //            return new JSONResult<LoginReply>("200", "success", reply);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mail or Password Error!");
