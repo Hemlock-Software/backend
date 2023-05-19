@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 @CrossOrigin(methods = {RequestMethod.POST})
 
@@ -25,17 +26,35 @@ public class RoomController {
 
     private static final String STR_FORMAT = "00000000";
 
-    @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> EnterRoom(@RequestBody EnterRoomArgs args) {
+    @RequestMapping(value = "/enter", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> EnterRoom(HttpServletRequest request,@RequestBody EnterRoomArgs args) {
         // 验证
+        // 1. get user data
+        String user = (String) request.getAttribute("email");
+        String storedUserJson = BackendApplication.ColdData.Get(user);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 
-        // 建立socket
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(args.getName());
+        Member caller = new Member(user, storedUserValue.getNickname());
+        // 2. check roomID is valid or not
+        if(BackendApplication.ColdData.Exists(args.getRoomID()) > 0){
+            RoomValueCold roomData = JSON.parseObject(BackendApplication.ColdData.Get(args.getRoomID()),RoomValueCold.class);
+            if(roomData.getPassword().equals(args.getPassword()) ){
+                // add to room member list
+                roomData.addMember(caller);
+                // add to user room list
+                BackendApplication.ColdData.Set(user,JSON.toJSONString(storedUserValue));
+                BackendApplication.ColdData.Set(args.getRoomID(), JSON.toJSONString(roomData));
+                return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(roomData));
+            }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("wrong password!");
+            }
+        }else{
+            // roomID not valid
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("roomID is not valid!");
+        }
     }
 
-    @RequestMapping(value = "/create-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> CreateRoom(HttpServletRequest request, @RequestBody CreateRoomArgs args) {
         String user = (String) request.getAttribute("email");
         String storedUserJson = BackendApplication.ColdData.Get(user);
@@ -53,18 +72,29 @@ public class RoomController {
         DecimalFormat df = new DecimalFormat(STR_FORMAT);
         String roomNum = df.format(roomSeq);
 
+        storedUserValue.addRoom(roomNum, args.getName());
+        BackendApplication.ColdData.Set(user,JSON.toJSONString(storedUserValue));
 
         String storedRoomJson = JSON.toJSONString(room);
         if (BackendApplication.ColdData.Set(roomNum, storedRoomJson))
-            return ResponseEntity.status(HttpStatus.OK).body("success!");
+            return ResponseEntity.status(HttpStatus.OK).body(roomNum);
         else
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
 //        return ResponseEntity.status(HttpStatus.OK).body("success");
+    }
 
+    // 获得用户加入的所有聊天室
+    @RequestMapping(value = "/getList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> GetList(HttpServletRequest request) {
+        String user = (String) request.getAttribute("email");
+        String storedUserJson = BackendApplication.ColdData.Get(user);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(storedUserValue.getRoomList()));
     }
 
     @RequestMapping(value = "/sendMessageTest", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> sendMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
+    public ResponseEntity<String> SendMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
         String user = (String) request.getAttribute("email");
         System.out.println(user);
         String storedUserJson = BackendApplication.ColdData.Get(user);
@@ -97,7 +127,7 @@ public class RoomController {
     }
 
     @RequestMapping(value = "/getMessageTest", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> getMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
+    public ResponseEntity<String> GetMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
         String user = (String) request.getAttribute("email");
         String storedUserJson = BackendApplication.ColdData.Get(user);
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);

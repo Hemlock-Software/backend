@@ -3,6 +3,8 @@ package com.hemlock.www.backend.room;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class RoomValueCold {
@@ -12,7 +14,7 @@ public class RoomValueCold {
     private String password;              //Room密码
     private int maxUsers;                 ///Room最大人数
 
-    private ArrayList<Member> members = new ArrayList<>(); //Room成员
+    private Set<Member> members = new HashSet<>(); //Room成员
 
     public void addMember(Member member) {
         this.members.add(member);

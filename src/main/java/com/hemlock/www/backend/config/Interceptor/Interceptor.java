@@ -21,9 +21,7 @@ public class Interceptor implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/user/join")      //拦截路径
-                .addPathPatterns("/room/sendMessageTest")//拦截路径
-                .addPathPatterns("/room/create-room")
-                .addPathPatterns("/room/getMessageTest")
+                .addPathPatterns("/room/*")
                 .excludePathPatterns("/user/get-token")
                 .excludePathPatterns("/user/login"); //放行路径
     }

@@ -59,7 +59,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This mail has been used!");
         }
 
-        UserValue userValue = new UserValue(args.getMail(), args.getPassword(), args.getIsManager());
+        UserValue userValue = new UserValue();
+        userValue.setIsManager(args.getIsManager());
+        userValue.setPassword(args.getPassword());
+        userValue.setNickname(args.getNickname());
+
         if (args.getNickname() != null) {
             userValue.setNickname(args.getNickname());
         }
@@ -171,27 +175,19 @@ public class UserController {
 
                 email.send();
             }
-        } catch (EmailException e) {
-            e.printStackTrace();
-        } catch (MessageAggregationException e) {
+        } catch (EmailException | MessageAggregationException e) {
             e.printStackTrace();
         }
 
 
-        if (BackendApplication.ColdData.Set("Verification" + args.getMail(), storeVerificationCode)) {
-            //email.send();
+        //email.send();
 //            System.out.println(uid.toString());
-            //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
-            TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
-            String token = BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
+        //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
+        TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
+        String token = BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
 
 //            return new JSONResult<String>("200", "success", token);
-            return ResponseEntity.status(HttpStatus.OK).body(token);
-
-        } else
-//            return new JSONResult<String>("400", "fail", "");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
-
+        return ResponseEntity.status(HttpStatus.OK).body(token);
 
     }
 
