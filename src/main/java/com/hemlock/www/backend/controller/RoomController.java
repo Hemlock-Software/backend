@@ -21,15 +21,6 @@ public class RoomController {
 
     private static final String STR_FORMAT = "00000000";
 
-    @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> EnterRoom(@RequestBody EnterRoomArgs args) {
-        // 验证
-
-        // 建立socket
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(args.getName());
-    }
 
     @RequestMapping(value = "/create-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> CreateRoom(HttpServletRequest request, @RequestBody CreateRoomArgs args) {
@@ -45,17 +36,53 @@ public class RoomController {
         room.addMember(owner);
         room.setPassword(args.getPassword());
         room.setMaxUsers(args.getMaxUsers());
-        Long roomSeq = BackendApplication.ColdData.Increment("roomSeq") ;
+        Long roomSeq = BackendApplication.ColdData.Increment("roomSeq");
         DecimalFormat df = new DecimalFormat(STR_FORMAT);
         String roomNum = df.format(roomSeq);
 
 
         String storedRoomJson = JSON.toJSONString(room);
-        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson))
-            return ResponseEntity.status(HttpStatus.OK).body("success!");
+        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
+            return ResponseEntity.status(HttpStatus.OK).body(roomNum);
         else
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
 //        return ResponseEntity.status(HttpStatus.OK).body("success");
 
     }
+
+    @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> EnterRoom(HttpServletRequest request, @RequestBody EnterRoomArgs args) {
+        String user = (String) request.getAttribute("email");
+        String storedUserJson = BackendApplication.ColdData.Get(user);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+        Member member = new Member(user, storedUserValue.getNickname());
+
+        String storedRoomJson = BackendApplication.ColdData.Get(args.getRoomID());
+        RoomValueCold storedRoomValue = JSON.parseObject(storedRoomJson, RoomValueCold.class);
+        if (args.isEnter()) {
+            String res = JSON.toJSONString(storedRoomValue);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
+
+        if (storedRoomValue.getPassword().length() > 0) {
+            if (!args.getPassword().equals(storedRoomValue.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password error!");
+            }
+        }
+
+        int roomSize = storedRoomValue.getRoomSize();
+        if (storedRoomValue.getMaxUsers() > 0 && roomSize++ > storedRoomValue.getMaxUsers()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This room has been full!");
+        }
+
+        storedRoomValue.addMember(member);
+        storedRoomJson = JSON.toJSONString(storedRoomValue);
+
+        String res = JSON.toJSONString(storedRoomValue);
+        if (BackendApplication.ColdData.Set(args.getRoomID(), storedRoomJson))
+            return ResponseEntity.status(HttpStatus.OK).body(res);
+        else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
+    }
 }
+

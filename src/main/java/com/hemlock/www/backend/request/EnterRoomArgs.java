@@ -3,9 +3,9 @@ package com.hemlock.www.backend.request;
 import lombok.Data;
 @Data
 public class EnterRoomArgs {
-    private String name;  //用户信息，后续要删除
-    private String ID;    //聊天室的ID
+    private String roomID;    //聊天室的ID
     private String password;//聊天室密码
+    private boolean enter; //是否已经加入
 
 //    public EnterRoomArgs(String name) {
 //        this.name = name;
