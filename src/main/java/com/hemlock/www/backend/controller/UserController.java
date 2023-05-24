@@ -175,7 +175,8 @@ public class UserController {
                 }
 
 
-                email.send();
+                String s = email.send();
+                System.out.println("返回"+s);
             }
         } catch (EmailException | MessageAggregationException e) {
             e.printStackTrace();
