@@ -59,7 +59,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This mail has been used!");
         }
 
-        UserValue userValue = new UserValue(args.getMail(), args.getPassword(), args.getIsManager());
+        UserValue userValue = new UserValue();
+        userValue.setIsManager(args.getIsManager());
+        userValue.setPassword(args.getPassword());
+        userValue.setNickname(args.getNickname());
+
         if (args.getNickname() != null) {
             userValue.setNickname(args.getNickname());
         }
@@ -122,31 +126,13 @@ public class UserController {
         if (Objects.equals(args.getPassword(), storedUserValue.getPassword())) {
             TokenData tokenData = new TokenData(args.getMail(), null, TokenData.Type.Login);
             reply.setToken(BackendApplication.TokenServer.SetToken(tokenData));
-            return ResponseEntity.status(HttpStatus.OK).body(BackendApplication.TokenServer.SetToken(tokenData));
+            reply.setIsManager(storedUserValue.getIsManager());
+            reply.setNickname(storedUserValue.getNickname());
+            return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(reply));
 //            return new JSONResult<LoginReply>("200", "success", reply);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mail or Password Error!");
         }
-    }
-
-    /**
-     * 校对token
-     *
-     * @param token 用于校对用户登录的token
-     */
-    @RequestMapping(value = "/check-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONResult<String> Check(@RequestHeader("Authorization") String token) {
-        //token会带前缀bearer ，从第七个字符开始
-        if (token.length() < 7) {
-            return new JSONResult<String>("400", "no token", null);
-        }
-        String TokenData = BackendApplication.TokenServer.Verify(token.substring(7));
-        if (TokenData != null) {
-            return new JSONResult<String>("200", "ok", TokenData);
-        } else {
-            return new JSONResult<String>("400", "wrong token", null);
-        }
-
     }
 
     /**
@@ -191,27 +177,19 @@ public class UserController {
 
                 email.send();
             }
-        } catch (EmailException e) {
-            e.printStackTrace();
-        } catch (MessageAggregationException e) {
+        } catch (EmailException | MessageAggregationException e) {
             e.printStackTrace();
         }
 
 
-        if (BackendApplication.ColdData.Set("Verification" + args.getMail(), storeVerificationCode)) {
-            //email.send();
+        //email.send();
 //            System.out.println(uid.toString());
-            //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
-            TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
-            String token = BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
+        //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
+        TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
+        String token = BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
 
 //            return new JSONResult<String>("200", "success", token);
-            return ResponseEntity.status(HttpStatus.OK).body(token);
-
-        } else
-//            return new JSONResult<String>("400", "fail", "");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
-
+        return ResponseEntity.status(HttpStatus.OK).body(token);
 
     }
 

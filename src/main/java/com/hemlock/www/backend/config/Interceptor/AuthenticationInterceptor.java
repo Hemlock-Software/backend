@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,6 +21,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private static final String HEADER_AUTH = "Authorization";
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse Response, Object object) throws Exception {
+        Response.setHeader("Access-Control-Allow-Origin", "*");
+        Response.setHeader("Access-Control-Allow-Headers", "*");
+        Response.setHeader("Access-Control-Allow-Methods", "*");
+
+
+
         Response.setCharacterEncoding("UTF-8");
         Response.setContentType("application/json; charset=utf-8");
 

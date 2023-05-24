@@ -1,13 +1,10 @@
 package com.hemlock.www.backend.reply;
 
+import lombok.Data;
+
+@Data
 public class LoginReply {
     private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+    private String nickname;
+    private Boolean isManager;
 }
