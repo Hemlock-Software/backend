@@ -71,7 +71,7 @@ public class WebSocket {
         Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
         for (String sessionId : sessionIdSet) { //迭代Key集合
             Session session1 = onlineClientMap.get(sessionId); //根据Key得到value
-            session.getAsyncRemote().sendText(content); //发送消息给客户端
+            session1.getAsyncRemote().sendText(content); //发送消息给客户端1
         }
 
     }

@@ -4,7 +4,7 @@ import com.hemlock.www.backend.room.Member;
 import com.hemlock.www.backend.room.RoomValueCold;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.util.*;
 
 @Data
 public class UserValue {
@@ -13,7 +13,7 @@ public class UserValue {
     private String password;
     private Boolean isManager;
 
-    private ArrayList<UserStoredRoomValue> roomList = new ArrayList<>();
+    private Set<UserStoredRoomValue> roomList = new HashSet<>();
     public void addRoom(String ID, String name){
         UserStoredRoomValue storedRoomValue  = new UserStoredRoomValue();
         storedRoomValue.setID(ID);

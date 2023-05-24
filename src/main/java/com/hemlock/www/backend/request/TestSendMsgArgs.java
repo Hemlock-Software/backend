@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class TestSendMsgArgs {
-    private String id;
-    private String content;
+    private String id;      //RoomID
+    private String content; //消息内容
 }

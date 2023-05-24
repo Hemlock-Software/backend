@@ -45,6 +45,8 @@ public class RoomController {
                 // add to room member list
                 roomData.addMember(caller);
                 // add to user room list
+                storedUserValue.addRoom(args.getRoomID(),roomData.getName());
+
                 BackendApplication.ColdData.Set(user,JSON.toJSONString(storedUserValue));
                 BackendApplication.ColdData.Set(args.getRoomID(), JSON.toJSONString(roomData));
                 return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(roomData));
@@ -58,7 +60,7 @@ public class RoomController {
     }
 
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/create-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> CreateRoom(HttpServletRequest request, @RequestBody CreateRoomArgs args) {
         String user = (String) request.getAttribute("email");
         String storedUserJson = BackendApplication.ColdData.Get(user);
@@ -178,7 +180,7 @@ public class RoomController {
     }
 
 //    @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-//    public ResponseEntity<String> EnterRoom(HttpServletRequest request, @RequestBody EnterRoomArgs args) {
+//    public ResponseEntity<String> EnterRoomForFirstTime(HttpServletRequest request, @RequestBody EnterRoomArgs args) {
 //        String user = (String) request.getAttribute("email");
 //        String storedUserJson = BackendApplication.ColdData.Get(user);
 //        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);

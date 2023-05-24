@@ -27,6 +27,10 @@ public class Interceptor implements WebMvcConfigurer {
                 .addPathPatterns("/user/test-token")//拦截路径
                 .addPathPatterns("/room/create-room")
                 .addPathPatterns("/room/enter-room")
+                .addPathPatterns("/room/getList")
+                .addPathPatterns("/room/getRoomInfo")
+                .addPathPatterns("/room/sendMessageTest")
+                .addPathPatterns("/room/getMessageTest")
                 .excludePathPatterns("/user/get-token")
                 .excludePathPatterns("/user/login"); //放行路径
     }
