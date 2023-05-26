@@ -10,9 +10,11 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -33,12 +35,11 @@ public class WebSocket {
     private static Map<String , Session> onlineClientMap = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("roomid") String roomid, @PathParam("username") String username){
+    public void onOpen(Session session, @PathParam("roomid") String roomid, @PathParam("username") String username) throws IOException {
         //连接成功
         onlineClientNumber.incrementAndGet();//在线数+1
         onlineClientMap.put(session.getId(),session);//添加当前连接的session
         System.out.println("connect: "+onlineClientNumber);
-
     }
 
     @OnClose
