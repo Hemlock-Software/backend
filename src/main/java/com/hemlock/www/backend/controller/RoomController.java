@@ -5,7 +5,7 @@ import com.hemlock.www.backend.BackendApplication;
 import com.hemlock.www.backend.request.CreateRoomArgs;
 import com.hemlock.www.backend.request.EnterRoomArgs;
 import com.hemlock.www.backend.request.GetRoomInfoArgs;
-import com.hemlock.www.backend.request.TestSendMsgArgs;
+import com.hemlock.www.backend.request.TestGetMsgArgs;
 import com.hemlock.www.backend.user.UserStoredRoomValue;
 import com.hemlock.www.backend.user.UserValue;
 import jakarta.servlet.http.HttpServletRequest;
@@ -83,6 +83,10 @@ public class RoomController {
 
         String storedRoomJson = JSON.toJSONString(room);
 
+        // 房间必须得有LastMessageID
+        RoomHot.SetLastMessageID(roomNum);
+
+
         if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
             return ResponseEntity.status(HttpStatus.OK).body(roomNum);
         else
@@ -117,41 +121,45 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The Room is not in your RoomList");
     }
 
-    @RequestMapping(value = "/send_message_test", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> SendMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
-        String user = (String) request.getAttribute("email");
-        System.out.println(user);
-        String storedUserJson = BackendApplication.ColdData.Get(user);
-        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 
-        Member owner = new Member(user, storedUserValue.getNickname());
-
-        StringBuilder retVal = new StringBuilder();
-
-        System.out.println(args);
-
-        MessageKey key = new MessageKey();
-        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(args.getId())));
-        key.setRoomID(args.getId());
-
-        System.out.println(key);
-
-        //prepare new message
-        Date date = new Date();
-        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd :hh:mm:ss");
-
-        MessageValue newMsg = new MessageValue();
-        newMsg.setContent(args.getContent());
-        newMsg.setTime(dateFormat.format(date));
-        newMsg.setSender(owner);
-
-        BackendApplication.HotData.Set(JSON.toJSONString(key),JSON.toJSONString(newMsg));
-
-        return ResponseEntity.status(HttpStatus.OK).body(retVal.toString());
-    }
+//    @RequestMapping(value = "/send_message_test", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+//    public ResponseEntity<String> SendMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
+//        String user = (String) request.getAttribute("email");
+//        System.out.println(user);
+//        String storedUserJson = BackendApplication.ColdData.Get(user);
+//        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+//
+//        Member owner = new Member(user, storedUserValue.getNickname());
+//
+//        StringBuilder retVal = new StringBuilder();
+//
+//        System.out.println(args);
+//
+//        MessageKey key = new MessageKey();
+//        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(args.getId())));
+//        key.setRoomID(args.getId());
+//
+//        System.out.println(key);
+//
+//        //prepare new message
+//        Date date = new Date();
+//        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd :hh:mm:ss");
+//
+//        MessageValue newMsg = new MessageValue();
+//        newMsg.setContent(args.getContent());
+//        newMsg.setTime(dateFormat.format(date));
+//        newMsg.setSender(owner);
+//
+//        BackendApplication.HotData.Set(JSON.toJSONString(key),JSON.toJSONString(newMsg));
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(retVal.toString());
+//    }
 
     @RequestMapping(value = "/get_message_test", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> GetMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
+    public ResponseEntity<String> GetMessageTest(HttpServletRequest request, @RequestBody TestGetMsgArgs args) {
+//    @RequestMapping(value = "/getMessageTest", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+//    public ResponseEntity<String> GetMessageTest(HttpServletRequest request, @RequestBody TestGetMsgArgs args) {
+
         String user = (String) request.getAttribute("email");
         String storedUserJson = BackendApplication.ColdData.Get(user);
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);

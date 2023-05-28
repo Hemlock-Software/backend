@@ -11,6 +11,10 @@ public class RoomHot {
         return BackendApplication.HotData.Increment(ID).toString();
     }
 
+    public static void SetLastMessageID(String ID){
+        BackendApplication.HotData.Set(ID,"0");
+    }
+
     public static Boolean checkExistMessage(String ID){
         if(BackendApplication.HotData.Exists(ID) > 0){
             // exist meta data
