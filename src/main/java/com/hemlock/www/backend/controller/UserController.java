@@ -33,7 +33,7 @@ import java.util.Random;
 @RequestMapping("/user")
 public class UserController {
 
-    @RequestMapping(value = "/get-token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/get_token", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> GetToken() {
         TokenData tokenData = new TokenData("this is test token data", null, TokenData.Type.Login);
         return ResponseEntity.status(HttpStatus.OK).body(BackendApplication.TokenServer.SetToken(tokenData));
@@ -141,7 +141,7 @@ public class UserController {
      * @param args 发送右键的请求体
      * @throws EmailException 发送邮件的异常
      */
-    @RequestMapping(value = "/send-mail", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/send_mail", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> sendVerificationCode(@RequestBody MailArgs args) throws EmailException {
 //        Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
 //        if (storedKeyNum > 0) {
@@ -199,7 +199,7 @@ public class UserController {
      *
      * @param args 找回密码的参数
      */
-    @RequestMapping(value = "/find-password", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/find_password", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> findPassword(@RequestBody FindPasswordArgs args, @RequestHeader("Authorization") String token) {
         Long storedKeyNum = BackendApplication.ColdData.Exists(args.getMail());
         if (storedKeyNum == 0) {

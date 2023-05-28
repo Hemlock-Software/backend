@@ -24,14 +24,14 @@ public class Interceptor implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/user/join")      //拦截路径
-                .addPathPatterns("/user/test-token")//拦截路径
-                .addPathPatterns("/room/create-room")
-                .addPathPatterns("/room/enter-room")
-                .addPathPatterns("/room/getList")
-                .addPathPatterns("/room/getRoomInfo")
-                .addPathPatterns("/room/sendMessageTest")
-                .addPathPatterns("/room/getMessageTest")
-                .excludePathPatterns("/user/get-token")
+                .addPathPatterns("/user/test_token")//拦截路径
+                .addPathPatterns("/room/create_room")
+                .addPathPatterns("/room/enter_room")
+                .addPathPatterns("/room/get_list")
+                .addPathPatterns("/room/get_room_info")
+                .addPathPatterns("/room/send_message_test")
+                .addPathPatterns("/room/get_message_test")
+                .excludePathPatterns("/user/get_token")
                 .excludePathPatterns("/user/login"); //放行路径
     }
 
