@@ -305,7 +305,6 @@ public class RoomController {
                 // delete room
                 BackendApplication.ColdData.Delete(args.getRoomID());
 
-                BackendApplication.ColdData.Set(args.getRoomID(), JSON.toJSONString(roomData));
                 return ResponseEntity.status(HttpStatus.OK).body("dismiss room success!");
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not owner!");
