@@ -21,4 +21,15 @@ public class UserValue {
 
         roomList.add(storedRoomValue);
     }
+
+    public void delRoom(String ID) {
+        Iterator<UserStoredRoomValue> iterator = roomList.iterator();
+        while (iterator.hasNext()) {
+            UserStoredRoomValue roomValue = iterator.next();
+            if (roomValue.getID().equals(ID)) {
+                iterator.remove();
+                break;
+            }
+        }
+    }
 }

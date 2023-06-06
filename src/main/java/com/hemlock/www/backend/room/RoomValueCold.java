@@ -19,6 +19,10 @@ public class RoomValueCold {
         this.members.add(member);
     }
 
+    public void delMember(Member member) {
+        this.members.remove(member);
+    }
+
     public int getRoomSize() {
         return this.members.size();
     }
