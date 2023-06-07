@@ -2,10 +2,7 @@ package com.hemlock.www.backend.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.BackendApplication;
-import com.hemlock.www.backend.request.CreateRoomArgs;
-import com.hemlock.www.backend.request.EnterRoomArgs;
-import com.hemlock.www.backend.request.GetRoomInfoArgs;
-import com.hemlock.www.backend.request.TestGetMsgArgs;
+import com.hemlock.www.backend.request.*;
 import com.hemlock.www.backend.user.UserStoredRoomValue;
 import com.hemlock.www.backend.user.UserValue;
 import jakarta.servlet.http.HttpServletRequest;
@@ -251,5 +248,101 @@ public class RoomController {
 //        else
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
 //    }
+
+    @RequestMapping(value = "/quit_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> QuitRoom(HttpServletRequest request, @RequestBody QuitRoomArgs args) {
+        // 1. get user data
+        String user = (String) request.getAttribute("email");
+        String storedUserJson = BackendApplication.ColdData.Get(user);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member caller = new Member(user, storedUserValue.getNickname());
+        // 2. check roomID is valid or not
+        if (BackendApplication.ColdData.Exists(args.getRoomID()) > 0) {
+            RoomValueCold roomData = JSON.parseObject(BackendApplication.ColdData.Get(args.getRoomID()), RoomValueCold.class);
+            // check user in room or not
+            if (roomData.getMembers().contains(caller)) {
+                // remove from room member list
+                roomData.delMember(caller);
+                // remove from user room list
+                storedUserValue.delRoom(args.getRoomID());
+
+                BackendApplication.ColdData.Set(user, JSON.toJSONString(storedUserValue));
+                BackendApplication.ColdData.Set(args.getRoomID(), JSON.toJSONString(roomData));
+                return ResponseEntity.status(HttpStatus.OK).body("quit room success!");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not in this room!");
+            }
+        } else {
+            // roomID not valid
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("roomID is not valid!");
+        }
+    }
+
+    @RequestMapping(value = "/remove_member", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> RemoveMember(HttpServletRequest request, @RequestBody RemoveMemberArgs args) {
+        // 1. get user data
+        String user = (String) request.getAttribute("email");
+        String storedUserJson = BackendApplication.ColdData.Get(user);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member caller = new Member(user, storedUserValue.getNickname());
+        // 2. check roomID is valid or not
+        if (BackendApplication.ColdData.Exists(args.getRoomID()) > 0) {
+            RoomValueCold roomData = JSON.parseObject(BackendApplication.ColdData.Get(args.getRoomID()), RoomValueCold.class);
+            // check is owner or not
+            if (roomData.getOwner().equals(caller)) {
+                // remove from room member list
+                String storedRmMemberJson = BackendApplication.ColdData.Get(args.getMail());
+                UserValue storedRmMemberValue = JSON.parseObject(storedRmMemberJson, UserValue.class);
+                Member rmMember = new Member(args.getMail(), storedRmMemberValue.getNickname());
+                roomData.delMember(rmMember);
+                // remove from user room list
+                storedRmMemberValue.delRoom(args.getRoomID());
+
+                BackendApplication.ColdData.Set(args.getMail(), JSON.toJSONString(storedRmMemberValue));
+                BackendApplication.ColdData.Set(args.getRoomID(), JSON.toJSONString(roomData));
+                return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(roomData));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not owner!");
+            }
+        } else {
+            // roomID not valid
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("roomID is not valid!");
+        }
+    }
+
+    @RequestMapping(value = "/dismiss_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<String> DismissRoom(HttpServletRequest request, @RequestBody DismissRoomArgs args) {
+        // 1. get user data
+        String user = (String) request.getAttribute("email");
+        String storedUserJson = BackendApplication.ColdData.Get(user);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member caller = new Member(user, storedUserValue.getNickname());
+        // 2. check roomID is valid or not
+        if (BackendApplication.ColdData.Exists(args.getRoomID()) > 0) {
+            RoomValueCold roomData = JSON.parseObject(BackendApplication.ColdData.Get(args.getRoomID()), RoomValueCold.class);
+            // check is owner or not
+            if (roomData.getOwner().equals(caller)) {
+                // remove from user room list
+                for (Member m : roomData.getMembers()) {
+                    String storedRmMemberJson = BackendApplication.ColdData.Get(m.getMail());
+                    UserValue storedRmMemberValue = JSON.parseObject(storedRmMemberJson, UserValue.class);
+                    storedRmMemberValue.delRoom(args.getRoomID());
+                    BackendApplication.ColdData.Set(m.getMail(),JSON.toJSONString(storedRmMemberValue));
+                }
+                // delete room
+                BackendApplication.ColdData.Delete(args.getRoomID());
+
+                return ResponseEntity.status(HttpStatus.OK).body("dismiss room success!");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not owner!");
+            }
+        } else {
+            // roomID not valid
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("roomID is not valid!");
+        }
+    }
 }
 

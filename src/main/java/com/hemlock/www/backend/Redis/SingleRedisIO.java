@@ -54,5 +54,11 @@ public class SingleRedisIO {
         RedisCommands<String, String> syncCommands = myConnection.sync();
         return syncCommands.expire(key,time);
     }
+
+    public Boolean Delete(String key){
+        RedisCommands<String, String> syncCommands = myConnection.sync();
+        syncCommands.del(key);
+        return true;
+    }
 }
 
