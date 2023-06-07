@@ -29,8 +29,14 @@ public class RoomController {
 
     private static final String STR_FORMAT = "00000000";
 
+    /**
+     * 加入房间
+     *
+     * @param args  房间参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/enter_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> EnterRoom(HttpServletRequest request,@RequestBody EnterRoomArgs args) {
+    public ResponseEntity<String> EnterRoom(HttpServletRequest request, @RequestBody EnterRoomArgs args) {
         // 验证
         // 1. get user data
         String user = (String) request.getAttribute("email");
@@ -39,27 +45,32 @@ public class RoomController {
 
         Member caller = new Member(user, storedUserValue.getNickname());
         // 2. check roomID is valid or not
-        if(BackendApplication.ColdData.Exists(args.getRoomID()) > 0){
-            RoomValueCold roomData = JSON.parseObject(BackendApplication.ColdData.Get(args.getRoomID()),RoomValueCold.class);
-            if(roomData.getPassword().equals(args.getPassword()) ){
+        if (BackendApplication.ColdData.Exists(args.getRoomID()) > 0) {
+            RoomValueCold roomData = JSON.parseObject(BackendApplication.ColdData.Get(args.getRoomID()), RoomValueCold.class);
+            if (roomData.getPassword().equals(args.getPassword())) {
                 // add to room member list
                 roomData.addMember(caller);
                 // add to user room list
-                storedUserValue.addRoom(args.getRoomID(),roomData.getName());
+                storedUserValue.addRoom(args.getRoomID(), roomData.getName());
 
-                BackendApplication.ColdData.Set(user,JSON.toJSONString(storedUserValue));
+                BackendApplication.ColdData.Set(user, JSON.toJSONString(storedUserValue));
                 BackendApplication.ColdData.Set(args.getRoomID(), JSON.toJSONString(roomData));
                 return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(roomData));
-            }else{
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("wrong password!");
             }
-        }else{
+        } else {
             // roomID not valid
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("roomID is not valid!");
         }
     }
 
-
+    /**
+     * 创建房间
+     *
+     * @param args  房间参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/create_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> CreateRoom(HttpServletRequest request, @RequestBody CreateRoomArgs args) {
         String user = (String) request.getAttribute("email");
@@ -79,7 +90,7 @@ public class RoomController {
         String roomNum = df.format(roomSeq);
 
         storedUserValue.addRoom(roomNum, args.getName());
-        BackendApplication.ColdData.Set(user,JSON.toJSONString(storedUserValue));
+        BackendApplication.ColdData.Set(user, JSON.toJSONString(storedUserValue));
 
         String storedRoomJson = JSON.toJSONString(room);
 
@@ -95,6 +106,11 @@ public class RoomController {
     }
 
     // 获得用户加入的所有聊天室
+    /**
+     * 获得用户已加入的所有聊天室
+     *
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/get_list", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> GetList(HttpServletRequest request) {
         String user = (String) request.getAttribute("email");
@@ -104,6 +120,12 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(storedUserValue.getRoomList()));
     }
 
+    /**
+     * 获得房间信息
+     *
+     * @param args  房间参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/get_room_info", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> GetRoomInfo(HttpServletRequest request, @RequestBody GetRoomInfoArgs args) {
         String user = (String) request.getAttribute("email");
@@ -155,6 +177,14 @@ public class RoomController {
 //        return ResponseEntity.status(HttpStatus.OK).body(retVal.toString());
 //    }
 
+
+    //追加翻页效果，page_index, page_num
+    /**
+     * 获得历史聊天数据
+     *
+     * @param args  请求体参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/get_message_test", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> GetMessageTest(HttpServletRequest request, @RequestBody TestGetMsgArgs args) {
 //    @RequestMapping(value = "/getMessageTest", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -167,18 +197,18 @@ public class RoomController {
         Member owner = new Member(user, storedUserValue.getNickname());
 
         // check meta data
-        if(!RoomHot.checkExistMessage(args.getId())){
+        if (!RoomHot.checkExistMessage(args.getId())) {
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
 
         ArrayList<MessageValue> retVal = new ArrayList<>();
 
         MessageKey key = new MessageKey();
-        key.setMessageID( Integer.parseInt( RoomHot.getLastMessageID(args.getId()) ) );
+        key.setMessageID(Integer.parseInt(RoomHot.getLastMessageID(args.getId())));
         key.setRoomID(args.getId());
 
-        for(int messageIndex = key.getMessageID();messageIndex>0;messageIndex--){
-            MessageValue message = JSON.parseObject(BackendApplication.HotData.Get(JSON.toJSONString(key)),MessageValue.class);
+        for (int messageIndex = key.getMessageID(); messageIndex > 0; messageIndex--) {
+            MessageValue message = JSON.parseObject(BackendApplication.HotData.Get(JSON.toJSONString(key)), MessageValue.class);
             retVal.add(message);
             key.setMessageID(key.getMessageID() - 1);
         }

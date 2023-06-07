@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>RoomController</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="PR.prettyPrint()">
+<nav class="navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">
+                backend
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://github.com/YeDaxia/JApiDocs" target="_blank">GitHub</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">V3.0<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="book with-summary">
+    <div class="book-summary">
+<div class="search-box form-group">
+    <input type="text" class="form-control" id="inputSearch" placeholder="搜索接口">
+    <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+</div>
+<div id="accordion" class="catalog">
+        <div class="panel">
+            <div id="heading0" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse0" aria-controls="collapse0">
+                <i class="glyphicon glyphicon-align-justify"></i> RoomController
+            </div>
+            <div id="collapse0" class="collapse in " aria-labelledby="heading0">
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#EnterRoom">
+                        加入房间
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#CreateRoom">
+                        创建房间
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#GetList">
+                        获得用户已加入的所有聊天室
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#GetRoomInfo">
+                        获得房间信息
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#GetMessageTest">
+                        获得历史聊天数据
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading1" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse1" aria-controls="collapse1">
+                <i class="glyphicon glyphicon-align-justify"></i> UserController
+            </div>
+            <div id="collapse1" class="collapse " aria-labelledby="heading1">
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_UserController.html#GetToken">
+                        GetToken
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_UserController.html#Join">
+                        用户注册
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_UserController.html#Login">
+                        用户登录
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_UserController.html#sendVerificationCode">
+                        发送用户注册验证的邮件
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_UserController.html#findPassword">
+                        帮助用户找回密码
+                    </a>
+            </div>
+        </div>
+</div>    </div>
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+                <div class="d-flex justify-content-between">
+                    <a class="header-menu toggle-catalog" href="javascript:void(0)"><i
+                            class="glyphicon glyphicon-align-justify"></i> 目录</a>
+                </div>
+            </div>
+            <div class="page-wrapper">
+                <div class="page-inner">
+                    <div class="action-list">
+                        <div class="action-item">
+<h2 id="EnterRoom"><a href="#">加入房间 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/enter_room</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"roomID":"string //聊天室的ID",
+	"password":"string //聊天室密码",
+	"enter":"boolean //是否已经加入"
+}</pre>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                        <div class="action-item">
+<h2 id="CreateRoom"><a href="#">创建房间 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/create_room</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"name":"string //房间名称",
+	"maxUsers":"int //聊天室最大人数",
+	"password":"string //聊天室密码"
+}</pre>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                        <div class="action-item">
+<h2 id="GetList"><a href="#">获得用户已加入的所有聊天室 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/get_list</code>
+        <span class="label label-default">POST</span>
+</p>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                        <div class="action-item">
+<h2 id="GetRoomInfo"><a href="#">获得房间信息 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/get_room_info</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"roomID":"string"
+}</pre>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                        <div class="action-item">
+<h2 id="GetMessageTest"><a href="#">获得历史聊天数据 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/get_message_test</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"id":"string //RoomID"
+}</pre>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.js"></script>
+<script>
+
+    var search_source_data = [
+            {name: 'RoomController.加入房间', url: 'com_hemlock_www_backend_controller_RoomController.html#EnterRoom'},
+            {name: 'RoomController.创建房间', url: 'com_hemlock_www_backend_controller_RoomController.html#CreateRoom'},
+            {name: 'RoomController.获得用户已加入的所有聊天室', url: 'com_hemlock_www_backend_controller_RoomController.html#GetList'},
+            {name: 'RoomController.获得房间信息', url: 'com_hemlock_www_backend_controller_RoomController.html#GetRoomInfo'},
+            {name: 'RoomController.获得历史聊天数据', url: 'com_hemlock_www_backend_controller_RoomController.html#GetMessageTest'},
+            {name: 'UserController.GetToken', url: 'com_hemlock_www_backend_controller_UserController.html#GetToken'},
+            {name: 'UserController.用户注册', url: 'com_hemlock_www_backend_controller_UserController.html#Join'},
+            {name: 'UserController.用户登录', url: 'com_hemlock_www_backend_controller_UserController.html#Login'},
+            {name: 'UserController.发送用户注册验证的邮件', url: 'com_hemlock_www_backend_controller_UserController.html#sendVerificationCode'},
+            {name: 'UserController.帮助用户找回密码', url: 'com_hemlock_www_backend_controller_UserController.html#findPassword'},
+    ];
+
+
+
+    $('.toggle-catalog').click(function () {
+        $('.book').toggleClass('with-summary');
+    });
+
+    $('#inputSearch').autocomplete({hint: false}, [
+        {
+            source: function (query, callback) {
+                var result = [];
+                for(var i = 0; i !== search_source_data.length; i++){
+                    if(search_source_data[i].name.indexOf(query) !== -1){
+                        result.push(search_source_data[i]);
+                    }
+                }
+                callback(result);
+            },
+            displayKey: 'name',
+            templates: {
+                suggestion: function (suggestion) {
+                    return suggestion.name;
+                }
+            }
+        }
+    ]).on('autocomplete:selected', function (event, suggestion, dataset, context) {
+        self.location = suggestion.url;
+    });
+</script>
+</body>
+</html>

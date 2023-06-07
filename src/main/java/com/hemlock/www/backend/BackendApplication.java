@@ -5,6 +5,8 @@ import com.hemlock.www.backend.Redis.ClusterRedisIO;
 import com.hemlock.www.backend.Redis.SingleRedisIO;
 import com.hemlock.www.backend.Token.TokenManager;
 import com.hemlock.www.backend.ZooKeeper.ZKManager;
+import io.github.yedaxia.apidocs.Docs;
+import io.github.yedaxia.apidocs.DocsConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,10 +22,10 @@ public class BackendApplication {
     public static void main(String[] args) throws Exception {
         //生成api文档
 //        DocsConfig config = new DocsConfig();
-//        config.setProjectPath("E:\\backend"); // 项目根目录
+//        config.setProjectPath("D:\\study\\grade3.2\\大规模实验\\backend"); // 项目根目录
 //        config.setProjectName("backend"); // 项目名称
-//        config.setApiVersion("V1.0");       // 声明该API的版本
-//        config.setDocsPath("E:\\backend\\files"); // 生成API 文档所在目录
+//        config.setApiVersion("V3.0");       // 声明该API的版本
+//        config.setDocsPath("D:\\study\\grade3.2\\大规模实验\\backend\\files"); // 生成API 文档所在目录
 //        config.setAutoGenerate(Boolean.TRUE);  // 配置自动生成
 //        Docs.buildHtmlDocs(config); // 执行生成文档
 
