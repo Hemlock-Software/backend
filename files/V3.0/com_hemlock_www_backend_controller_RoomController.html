@@ -57,6 +57,15 @@
                     <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#GetMessageTest">
                         获得历史聊天数据
                     </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#QuitRoom">
+                        用户退出房间
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#RemoveMember">
+                        聊天室管理员踢出成员
+                    </a>
+                    <a class="catalog-item" href="com_hemlock_www_backend_controller_RoomController.html#DismissRoom">
+                        解散房间
+                    </a>
             </div>
         </div>
         <div class="panel">
@@ -169,6 +178,52 @@
     <pre class="prettyprint lang-json">string{}</pre>
                         </div>
                         <hr>
+                        <div class="action-item">
+<h2 id="QuitRoom"><a href="#">用户退出房间 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/quit_room</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"roomID":"string //聊天室的ID"
+}</pre>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                        <div class="action-item">
+<h2 id="RemoveMember"><a href="#">聊天室管理员踢出成员 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/remove_member</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"roomID":"string //聊天室的ID{",
+	"mail":"string //踢出的用户的邮箱"
+}</pre>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
+                        <div class="action-item">
+<h2 id="DismissRoom"><a href="#">解散房间 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/room/dismiss_room</code>
+        <span class="label label-default">POST</span>
+</p>
+        <p><strong>请求体</strong> <span class="badge">application/json</span></p>
+        <pre class="prettyprint lang-json">{
+	"roomID":"string //聊天室的ID"
+}</pre>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">string{}</pre>
+                        </div>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -187,6 +242,9 @@
             {name: 'RoomController.获得用户已加入的所有聊天室', url: 'com_hemlock_www_backend_controller_RoomController.html#GetList'},
             {name: 'RoomController.获得房间信息', url: 'com_hemlock_www_backend_controller_RoomController.html#GetRoomInfo'},
             {name: 'RoomController.获得历史聊天数据', url: 'com_hemlock_www_backend_controller_RoomController.html#GetMessageTest'},
+            {name: 'RoomController.用户退出房间', url: 'com_hemlock_www_backend_controller_RoomController.html#QuitRoom'},
+            {name: 'RoomController.聊天室管理员踢出成员', url: 'com_hemlock_www_backend_controller_RoomController.html#RemoveMember'},
+            {name: 'RoomController.解散房间', url: 'com_hemlock_www_backend_controller_RoomController.html#DismissRoom'},
             {name: 'UserController.GetToken', url: 'com_hemlock_www_backend_controller_UserController.html#GetToken'},
             {name: 'UserController.用户注册', url: 'com_hemlock_www_backend_controller_UserController.html#Join'},
             {name: 'UserController.用户登录', url: 'com_hemlock_www_backend_controller_UserController.html#Login'},

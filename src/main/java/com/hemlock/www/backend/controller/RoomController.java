@@ -249,6 +249,12 @@ public class RoomController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
 //    }
 
+    /**
+     * 用户退出房间
+     *
+     * @param args  请求体参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/quit_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> QuitRoom(HttpServletRequest request, @RequestBody QuitRoomArgs args) {
         // 1. get user data
@@ -279,6 +285,12 @@ public class RoomController {
         }
     }
 
+    /**
+     * 聊天室管理员踢出成员
+     *
+     * @param args  请求体参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/remove_member", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> RemoveMember(HttpServletRequest request, @RequestBody RemoveMemberArgs args) {
         // 1. get user data
@@ -312,6 +324,12 @@ public class RoomController {
         }
     }
 
+    /**
+     * 解散房间
+     *
+     * @param args  请求体参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/dismiss_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> DismissRoom(HttpServletRequest request, @RequestBody DismissRoomArgs args) {
         // 1. get user data
