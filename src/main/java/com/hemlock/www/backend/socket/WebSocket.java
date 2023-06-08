@@ -53,7 +53,7 @@ public class WebSocket {
 
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
-
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         MessageValue newMsg = new MessageValue();
         newMsg.setContent(content);
         newMsg.setTime(dateFormat.format(date));
@@ -92,7 +92,7 @@ public class WebSocket {
 
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
-
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         MessageValue newMsg = new MessageValue();
         newMsg.setContent(content);
         newMsg.setTime(dateFormat.format(date));
@@ -135,7 +135,7 @@ public class WebSocket {
 
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
-
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         MessageValue newMsg = new MessageValue();
         newMsg.setContent(content);
         newMsg.setTime(dateFormat.format(date));
