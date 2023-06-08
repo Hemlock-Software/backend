@@ -2,6 +2,9 @@ package com.hemlock.www.backend.socket;
 
 import com.alibaba.fastjson.JSON;
 import com.hemlock.www.backend.BackendApplication;
+import com.hemlock.www.backend.MessageQueue.Observer;
+import com.hemlock.www.backend.MessageQueue.Subscriber;
+import com.hemlock.www.backend.Redis.ClusterRedisIO;
 import com.hemlock.www.backend.room.*;
 import com.hemlock.www.backend.user.UserValue;
 import com.sun.mail.imap.MessageVanishedEvent;
@@ -26,19 +29,58 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @ServerEndpoint("/websocket/{roomid}/{username}") //暴露的ws应用的路径
-public class WebSocket {
+public class WebSocket extends Observer {
     private static AtomicInteger onlineClientNumber = new AtomicInteger(0);
     //在线客户端的集合
     private static Map<String , Session> onlineClientMap = new ConcurrentHashMap<>();
     private static Map<String,Map<String , Session>> socketMap = new HashMap<>();
+    private static boolean isObserverAdded = false; //添加静态变量
+    private static WebSocket observerInstance = new WebSocket(); // 创建静态观察者实例
+
+    // 在静态代码块中添加观察者
+    static {
+        if (!isObserverAdded) {
+            Subscriber.getInstance().attach(observerInstance);
+            isObserverAdded = true;
+        }
+    }
 
     @OnOpen
     public void onOpen(Session session, @PathParam("roomid") String roomid, @PathParam("username") String username) throws IOException {
         //连接成功
         onlineClientNumber.incrementAndGet();//在线数+1
-        if (!socketMap.containsKey(roomid)) socketMap.put(roomid,new ConcurrentHashMap<>());
+        if (!socketMap.containsKey(roomid)){
+            socketMap.put(roomid,new ConcurrentHashMap<>());
+            BackendApplication.HotData.Subscribe(roomid);
+        }
         socketMap.get(roomid).put(session.getId(),session);
 //        onlineClientMap.put(session.getId(),session);//添加当前连接的session
+
+
+        String content = "enter";
+        String storedUserJson = BackendApplication.ColdData.Get(username);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member owner = new Member("$NOTICE$", storedUserValue.getNickname());
+
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        MessageValue newMsg = new MessageValue();
+        newMsg.setContent(content);
+        newMsg.setTime(dateFormat.format(date));
+        newMsg.setSender(owner);
+
+
+        //转发给其他用户
+//        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
+        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
+        for (String sessionId : sessionIdSet) { //迭代Key集合
+            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
+            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+
+        }
         System.out.println("connect: "+onlineClientNumber);
     }
 
@@ -48,6 +90,37 @@ public class WebSocket {
         onlineClientNumber.decrementAndGet();//在线数-1
         socketMap.get(roomid).remove(session.getId());
 //        onlineClientMap.remove(session.getId());//移除当前连接的session
+
+        String content = "quit";
+        String storedUserJson = BackendApplication.ColdData.Get(username);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member owner = new Member("$NOTICE$", storedUserValue.getNickname());
+
+//        MessageKey key = new MessageKey();
+//        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
+//        key.setRoomID(roomid);
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        MessageValue newMsg = new MessageValue();
+        newMsg.setContent(content);
+        newMsg.setTime(dateFormat.format(date));
+        newMsg.setSender(owner);
+
+//        BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
+
+
+        //转发给其他用户
+//        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
+        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
+        for (String sessionId : sessionIdSet) { //迭代Key集合
+            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
+            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+
+        }
+
         System.out.println("close: "+onlineClientNumber);
     }
 
@@ -72,27 +145,43 @@ public class WebSocket {
         key.setRoomID(roomid);
 
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :hh:mm:ss");
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         MessageValue newMsg = new MessageValue();
         newMsg.setContent(content);
         newMsg.setTime(dateFormat.format(date));
         newMsg.setSender(owner);
 
+
         BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
 
+        //放入消息队列
+        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
 
         //转发给其他用户
+        // update by hrj:这里注释掉，不然消息队列会重复推送
 //        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
-        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
-        for (String sessionId : sessionIdSet) { //迭代Key集合
-            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
-            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
-
-        }
+//        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
+//        for (String sessionId : sessionIdSet) { //迭代Key集合
+//            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
+//            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+//
+//        }
         System.out.println("message2: "+onlineClientNumber);
     }
 
+    @Override
+    public void update(String roomId,String message) {
+        if (!socketMap.containsKey(roomId)){
+            return;
+        }
+        System.out.println("message queue valid");
+        Set<String> sessionIdSet = socketMap.get(roomId).keySet(); //获得Map的Key的集合
+        for (String sessionId : sessionIdSet) { //迭代Key集合
+            Session session1 = socketMap.get(roomId).get(sessionId); //根据Key得到value
+            session1.getAsyncRemote().sendText(message); //发送消息给客户端
 
+        }
+    }
 
 }
