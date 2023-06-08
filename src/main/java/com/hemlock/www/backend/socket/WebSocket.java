@@ -39,6 +39,37 @@ public class WebSocket {
         if (!socketMap.containsKey(roomid)) socketMap.put(roomid,new ConcurrentHashMap<>());
         socketMap.get(roomid).put(session.getId(),session);
 //        onlineClientMap.put(session.getId(),session);//添加当前连接的session
+
+
+        String content = "enter";
+        String storedUserJson = BackendApplication.ColdData.Get(username);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member owner = new Member("$NOTICE$", storedUserValue.getNickname());
+
+//        MessageKey key = new MessageKey();
+//        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
+//        key.setRoomID(roomid);
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+
+        MessageValue newMsg = new MessageValue();
+        newMsg.setContent(content);
+        newMsg.setTime(dateFormat.format(date));
+        newMsg.setSender(owner);
+
+//        BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
+
+
+        //转发给其他用户
+//        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
+        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
+        for (String sessionId : sessionIdSet) { //迭代Key集合
+            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
+            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+
+        }
         System.out.println("connect: "+onlineClientNumber);
     }
 
@@ -48,6 +79,37 @@ public class WebSocket {
         onlineClientNumber.decrementAndGet();//在线数-1
         socketMap.get(roomid).remove(session.getId());
 //        onlineClientMap.remove(session.getId());//移除当前连接的session
+
+        String content = "quit";
+        String storedUserJson = BackendApplication.ColdData.Get(username);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member owner = new Member("$NOTICE$", storedUserValue.getNickname());
+
+//        MessageKey key = new MessageKey();
+//        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
+//        key.setRoomID(roomid);
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+
+        MessageValue newMsg = new MessageValue();
+        newMsg.setContent(content);
+        newMsg.setTime(dateFormat.format(date));
+        newMsg.setSender(owner);
+
+//        BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
+
+
+        //转发给其他用户
+//        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
+        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
+        for (String sessionId : sessionIdSet) { //迭代Key集合
+            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
+            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+
+        }
+
         System.out.println("close: "+onlineClientNumber);
     }
 
@@ -72,7 +134,7 @@ public class WebSocket {
         key.setRoomID(roomid);
 
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
 
         MessageValue newMsg = new MessageValue();
         newMsg.setContent(content);
