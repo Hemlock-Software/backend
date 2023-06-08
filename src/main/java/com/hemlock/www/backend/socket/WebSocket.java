@@ -63,9 +63,6 @@ public class WebSocket extends Observer {
 
         Member owner = new Member("$NOTICE$", storedUserValue.getNickname());
 
-//        MessageKey key = new MessageKey();
-//        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
-//        key.setRoomID(roomid);
 
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
@@ -74,8 +71,6 @@ public class WebSocket extends Observer {
         newMsg.setContent(content);
         newMsg.setTime(dateFormat.format(date));
         newMsg.setSender(owner);
-
-//        BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
 
 
         //转发给其他用户

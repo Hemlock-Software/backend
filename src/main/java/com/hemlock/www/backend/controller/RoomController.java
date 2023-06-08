@@ -13,10 +13,7 @@ import com.hemlock.www.backend.room.*;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 
 @CrossOrigin(methods = {RequestMethod.POST})
 
@@ -334,6 +331,16 @@ public class RoomController {
                 }
                 // delete room
                 BackendApplication.ColdData.Delete(args.getRoomID());
+                // broadcast the dismissal
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+                dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+                MessageValue newMsg = new MessageValue();
+                newMsg.setContent("dismiss");
+                newMsg.setTime(dateFormat.format(date));
+                newMsg.setSender(new Member(user, storedUserValue.getNickname()));
+                //放入消息队列
+                BackendApplication.HotData.SendMSG(args.getRoomID(), JSON.toJSONString(newMsg));
 
                 return ResponseEntity.status(HttpStatus.OK).body("dismiss room success!");
             } else {
