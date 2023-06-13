@@ -63,7 +63,7 @@ public class WebSocket extends Observer {
         String storedUserJson = BackendApplication.ColdData.Get(username);
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 
-        Member owner = new Member("$NOTICE$", storedUserValue.getNickname());
+        Member owner = new Member("$notice$", storedUserValue.getNickname());
 
 
         Date date = new Date();
@@ -97,7 +97,7 @@ public class WebSocket extends Observer {
         String storedUserJson = BackendApplication.ColdData.Get(username);
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 
-        Member owner = new Member("$NOTICE$", storedUserValue.getNickname());
+        Member owner = new Member("$notice$", storedUserValue.getNickname());
 
 //        MessageKey key = new MessageKey();
 //        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
@@ -165,7 +165,7 @@ public class WebSocket extends Observer {
         messageHandler(content,roomid,owner);
 
         // 聊天机器人部分
-        if(content.length() >= ChatGLM.CHAT_GLM_PREFIX.length()){
+        if(content.length() >= ChatGLM.CHAT_GLM_PREFIX.length() && content.substring(0,ChatGLM.CHAT_GLM_PREFIX.length()).equals(ChatGLM.CHAT_GLM_PREFIX)){
             CompletableFuture<Void> response = CompletableFuture.runAsync(() -> {
                 String chatBotResponse = ChatGLM.getMessage( content.substring(ChatGLM.CHAT_GLM_PREFIX.length() ) );
                 Member chatBot = new Member("nomail@localhost", "ChatBot-ChatGLM6B");
