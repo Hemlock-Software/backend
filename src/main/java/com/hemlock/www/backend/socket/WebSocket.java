@@ -198,7 +198,7 @@ public class WebSocket extends Observer {
                 ArrayList<String> b = new ArrayList<>();
                 b.add(content.substring(ChatGLM.CHAT_GLM_PREFIX.length()));
                 b.add(chatBotResponse);
-                if(history.history.size()<=10){
+                if(history.history.size()<=4){
                     history.history.add(b);
                 }else{
                     history.history.remove(1);
