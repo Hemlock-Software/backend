@@ -15,6 +15,7 @@ import io.lettuce.core.pubsub.RedisPubSubListener;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public class ClusterRedisIO {
     private RedisClusterClient myClient = null;
@@ -76,5 +77,18 @@ public class ClusterRedisIO {
     public Boolean Expire(String key,Duration time){
         RedisClusterCommands<String, String> syncCommands = myConnection.sync();
         return syncCommands.expire(key,time);
+    }
+
+    public List<String> GetListRange(String key, int start, int end){
+        RedisClusterCommands<String, String> syncCommands = myConnection.sync();
+        return syncCommands.lrange(key,start,end);
+    }
+    public Long GetListLen(String key){
+        RedisClusterCommands<String, String> syncCommands = myConnection.sync();
+        return syncCommands.llen(key);
+    }
+
+    public void ListRPop(String key){
+
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+
 @Data
 class ChatGLMResponse{
     private String response;
@@ -18,6 +20,7 @@ class ChatGLMResponse{
 
 public class ChatGLM {
     static private String Url = "http://10.112.11.58:8000/short";
+    static private String Url2 = "http://10.112.11.58:8000/";
     static public String CHAT_GLM_PREFIX = "@ChatGLM";
 
     public static String getMessage(String input){
@@ -34,6 +37,29 @@ public class ChatGLM {
 
         try {
             String result = restTemplate.postForObject(Url, formEntity, String.class);
+            ChatGLMResponse response = JSON.parseObject(result,ChatGLMResponse.class);
+
+            return response.getResponse();
+        }catch (Exception e){
+            return "ChatGLM暂时掉线";
+        }
+    }
+
+    public static String getMessageWithContext(String input, ArrayList<ArrayList<String>> history){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+        headers.setContentType(type);
+        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+
+        JSONObject param = new JSONObject();
+        param.put("prompt", input);
+        param.put("history", history);
+
+        HttpEntity<String> formEntity = new HttpEntity<String>(param.toJSONString(), headers);
+
+        try {
+            String result = restTemplate.postForObject(Url2, formEntity, String.class);
             ChatGLMResponse response = JSON.parseObject(result,ChatGLMResponse.class);
 
             return response.getResponse();

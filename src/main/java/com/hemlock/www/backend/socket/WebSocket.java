@@ -39,6 +39,10 @@ public class WebSocket extends Observer {
     private static boolean isObserverAdded = false; //添加静态变量
     private static WebSocket observerInstance = new WebSocket(); // 创建静态观察者实例
 
+    // 记录每个房间的ChatGLM记录
+    // 放redis里面，以后负载均衡也能用
+    private static String ChatGLMHistoryPrifix = "ChatGLMHistory";
+
     // 在静态代码块中添加观察者
     static {
         if (!isObserverAdded) {
@@ -165,11 +169,44 @@ public class WebSocket extends Observer {
         messageHandler(content,roomid,owner);
 
         // 聊天机器人部分
+        // 没有上下文版
+//        if(content.length() >= ChatGLM.CHAT_GLM_PREFIX.length() && content.substring(0,ChatGLM.CHAT_GLM_PREFIX.length()).equals(ChatGLM.CHAT_GLM_PREFIX)){
+//            CompletableFuture<Void> response = CompletableFuture.runAsync(() -> {
+//                String chatBotResponse = ChatGLM.getMessage( content.substring(ChatGLM.CHAT_GLM_PREFIX.length() ) );
+//                Member chatBot = new Member("nomail@localhost", "ChatBot-ChatGLM6B");
+//
+//                messageHandler(chatBotResponse,roomid,chatBot);
+//            });
+//        }
         if(content.length() >= ChatGLM.CHAT_GLM_PREFIX.length() && content.substring(0,ChatGLM.CHAT_GLM_PREFIX.length()).equals(ChatGLM.CHAT_GLM_PREFIX)){
             CompletableFuture<Void> response = CompletableFuture.runAsync(() -> {
-                String chatBotResponse = ChatGLM.getMessage( content.substring(ChatGLM.CHAT_GLM_PREFIX.length() ) );
-                Member chatBot = new Member("nomail@localhost", "ChatBot-ChatGLM6B");
+                ArrayList<ArrayList<String>> history = null;
 
+                if(BackendApplication.HotData.Exists(ChatGLMHistoryPrifix+roomid) > 0){
+                    history = JSON.parseObject(BackendApplication.HotData.Get(ChatGLMHistoryPrifix+roomid),history.getClass());
+                }else{
+                    history = new ArrayList<>();
+                    ArrayList<String> a = new ArrayList<>();
+                    a.add("接下来的所有输出只含一句话，不要超过30字。");
+                    a.add("好的。");
+                    history.add(a);
+                }
+
+                // get response
+                String chatBotResponse = ChatGLM.getMessageWithContext( content.substring(ChatGLM.CHAT_GLM_PREFIX.length()),history );
+                // edit room history
+                ArrayList<String> b = new ArrayList<>();
+                b.add(content.substring(ChatGLM.CHAT_GLM_PREFIX.length()));
+                b.add(chatBotResponse);
+                if(history.size()<=10){
+                    history.add(b);
+                }else{
+                    history.remove(1);
+                    history.add(b);
+                }
+                BackendApplication.HotData.Set(ChatGLMHistoryPrifix+roomid,JSON.toJSONString(history));
+                // send message
+                Member chatBot = new Member("nomail@localhost", "ChatBot-ChatGLM6B");
                 messageHandler(chatBotResponse,roomid,chatBot);
             });
         }
