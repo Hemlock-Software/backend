@@ -17,7 +17,8 @@ class ChatGLMResponse{
 };
 
 public class ChatGLM {
-    static String Url = "http://10.112.11.58:8000/short";
+    static private String Url = "http://10.112.11.58:8000/short";
+    static public String CHAT_GLM_PREFIX = "@ChatGLM";
 
     public static String getMessage(String input){
         RestTemplate restTemplate = new RestTemplate();

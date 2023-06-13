@@ -2,6 +2,7 @@ package com.hemlock.www.backend.socket;
 
 import com.alibaba.fastjson.JSON;
 import com.hemlock.www.backend.BackendApplication;
+import com.hemlock.www.backend.ChatBot.ChatGLM;
 import com.hemlock.www.backend.MessageQueue.Observer;
 import com.hemlock.www.backend.MessageQueue.Subscriber;
 import com.hemlock.www.backend.Redis.ClusterRedisIO;
@@ -18,6 +19,7 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -130,16 +132,8 @@ public class WebSocket extends Observer {
         error.printStackTrace();
     }
 
-    @OnMessage
-    public void onMessage(Session session, String content, @PathParam("roomid") String roomid, @PathParam("username") String username){
-        System.out.println("roomid:"+roomid+" username:"+username);
-        System.out.println("message1: "+onlineClientNumber);
 
-        String storedUserJson = BackendApplication.ColdData.Get(username);
-        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
-
-        Member owner = new Member(username, storedUserValue.getNickname());
-
+    private void messageHandler(String content, String roomid, Member owner){
         MessageKey key = new MessageKey();
         key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
         key.setRoomID(roomid);
@@ -157,6 +151,28 @@ public class WebSocket extends Observer {
 
         //放入消息队列
         BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
+    }
+    @OnMessage
+    public void onMessage(Session session, String content, @PathParam("roomid") String roomid, @PathParam("username") String username){
+        System.out.println("roomid:"+roomid+" username:"+username);
+        System.out.println("message1: "+onlineClientNumber);
+
+        String storedUserJson = BackendApplication.ColdData.Get(username);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member owner = new Member(username, storedUserValue.getNickname());
+
+        messageHandler(content,roomid,owner);
+
+        // 聊天机器人部分
+        if(content.length() >= ChatGLM.CHAT_GLM_PREFIX.length()){
+            CompletableFuture<Void> response = CompletableFuture.runAsync(() -> {
+                String chatBotResponse = ChatGLM.getMessage( content.substring(ChatGLM.CHAT_GLM_PREFIX.length() ) );
+                Member chatBot = new Member("nomail@localhost", "ChatBot-ChatGLM6B");
+
+                messageHandler(chatBotResponse,roomid,chatBot);
+            });
+        }
 
         //转发给其他用户
         // update by hrj:这里注释掉，不然消息队列会重复推送
