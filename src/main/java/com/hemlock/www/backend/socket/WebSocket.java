@@ -3,6 +3,7 @@ package com.hemlock.www.backend.socket;
 import com.alibaba.fastjson.JSON;
 import com.hemlock.www.backend.BackendApplication;
 import com.hemlock.www.backend.ChatBot.ChatGLM;
+import com.hemlock.www.backend.ChatBot.ChatGLMHistory;
 import com.hemlock.www.backend.MessageQueue.Observer;
 import com.hemlock.www.backend.MessageQueue.Subscriber;
 import com.hemlock.www.backend.Redis.ClusterRedisIO;
@@ -180,29 +181,28 @@ public class WebSocket extends Observer {
 //        }
         if(content.length() >= ChatGLM.CHAT_GLM_PREFIX.length() && content.substring(0,ChatGLM.CHAT_GLM_PREFIX.length()).equals(ChatGLM.CHAT_GLM_PREFIX)){
             CompletableFuture<Void> response = CompletableFuture.runAsync(() -> {
-                ArrayList<ArrayList<String>> history = null;
+                ChatGLMHistory history = new ChatGLMHistory();
 
                 if(BackendApplication.HotData.Exists(ChatGLMHistoryPrifix+roomid) > 0){
-                    history = JSON.parseObject(BackendApplication.HotData.Get(ChatGLMHistoryPrifix+roomid),history.getClass());
+                    history = JSON.parseObject(BackendApplication.HotData.Get(ChatGLMHistoryPrifix+roomid),ChatGLMHistory.class);
                 }else{
-                    history = new ArrayList<>();
                     ArrayList<String> a = new ArrayList<>();
                     a.add("接下来的所有输出只含一句话，不要超过30字。");
                     a.add("好的。");
-                    history.add(a);
+                    history.history.add(a);
                 }
 
                 // get response
-                String chatBotResponse = ChatGLM.getMessageWithContext( content.substring(ChatGLM.CHAT_GLM_PREFIX.length()),history );
+                String chatBotResponse = ChatGLM.getMessageWithContext( content.substring(ChatGLM.CHAT_GLM_PREFIX.length()),history.history );
                 // edit room history
                 ArrayList<String> b = new ArrayList<>();
                 b.add(content.substring(ChatGLM.CHAT_GLM_PREFIX.length()));
                 b.add(chatBotResponse);
-                if(history.size()<=10){
-                    history.add(b);
+                if(history.history.size()<=10){
+                    history.history.add(b);
                 }else{
-                    history.remove(1);
-                    history.add(b);
+                    history.history.remove(1);
+                    history.history.add(b);
                 }
                 BackendApplication.HotData.Set(ChatGLMHistoryPrifix+roomid,JSON.toJSONString(history));
                 // send message
