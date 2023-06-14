@@ -3,11 +3,13 @@ package com.hemlock.www.backend.ChatBot;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.Data;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.util.ArrayList;
 
 @Data
@@ -46,7 +48,13 @@ public class ChatGLM {
     }
 
     public static String getMessageWithContext(String input, ArrayList<ArrayList<String>> history){
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
+                .setConnectTimeout(Duration.ofSeconds(10)) //连接超时时间10秒
+                .setReadTimeout(Duration.ofSeconds(30)); //读取超时时间30秒
+
+        RestTemplate restTemplate = restTemplateBuilder.build();
+
+
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
         headers.setContentType(type);
