@@ -58,6 +58,11 @@ public class ClusterRedisIO {
         return true;
     }
 
+    public void Del(String key){
+        RedisClusterCommands<String, String> syncCommands = myConnection.sync();
+        syncCommands.del(key);
+    }
+
     public Long Exists(String key){
         RedisClusterCommands<String, String> syncCommands = myConnection.sync();
         return syncCommands.exists(key);

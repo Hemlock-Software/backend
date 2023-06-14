@@ -353,6 +353,7 @@ public class RoomController {
                 }
                 // delete room
                 BackendApplication.ColdData.Delete(args.getRoomID());
+                BackendApplication.HotData.Del(args.getRoomID());
                 // broadcast the dismissal
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");

@@ -39,6 +39,10 @@ public class RoomHot {
         BackendApplication.HotData.ListRPush(ID,val);
     }
 
+    public static void delAllMessage(String ID){
+
+    }
+
 //    public static void createNewList(String ID,Member creator){
 //        Date date = new Date();
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
