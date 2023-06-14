@@ -39,15 +39,15 @@ public class RoomHot {
         BackendApplication.HotData.ListRPush(ID,val);
     }
 
-    public static void createNewList(String ID,Member creator){
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-        MessageValue newMsg = new MessageValue();
-        newMsg.setContent("Welcome to chat!");
-        newMsg.setTime(dateFormat.format(date));
-        newMsg.setSender(creator);
-
-        BackendApplication.HotData.ListRPush(ID, JSON.toJSONString(newMsg));
-    }
+//    public static void createNewList(String ID,Member creator){
+//        Date date = new Date();
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+//        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+//        MessageValue newMsg = new MessageValue();
+//        newMsg.setContent("Welcome to chat!");
+//        newMsg.setTime(dateFormat.format(date));
+//        newMsg.setSender(creator);
+//
+//        BackendApplication.HotData.ListRPush(ID, JSON.toJSONString(newMsg));
+//    }
 }

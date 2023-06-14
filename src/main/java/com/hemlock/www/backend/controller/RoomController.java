@@ -91,7 +91,7 @@ public class RoomController {
         // 房间必须得有LastMessageID
 //        RoomHot.SetLastMessageID(roomNum);
 
-        RoomHot.createNewList(roomNum,owner);
+//        RoomHot.createNewList(roomNum,owner);
 
 
 //        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
