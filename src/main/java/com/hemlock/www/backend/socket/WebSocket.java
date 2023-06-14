@@ -82,12 +82,15 @@ public class WebSocket extends Observer {
 
         //转发给其他用户
 //        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
-        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
-        for (String sessionId : sessionIdSet) { //迭代Key集合
-            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
-            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+//        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
+//        for (String sessionId : sessionIdSet) { //迭代Key集合
+//            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
+//            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+//
+//        }
 
-        }
+        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
+        
         System.out.println("connect: "+onlineClientNumber);
     }
 
@@ -121,12 +124,13 @@ public class WebSocket extends Observer {
 
         //转发给其他用户
 //        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
-        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
-        for (String sessionId : sessionIdSet) { //迭代Key集合
-            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
-            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
-
-        }
+//        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
+//        for (String sessionId : sessionIdSet) { //迭代Key集合
+//            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
+//            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
+//
+//        }
+        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
 
         System.out.println("close: "+onlineClientNumber);
     }
@@ -139,9 +143,9 @@ public class WebSocket extends Observer {
 
 
     private void messageHandler(String content, String roomid, Member owner){
-        MessageKey key = new MessageKey();
-        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
-        key.setRoomID(roomid);
+//        MessageKey key = new MessageKey();
+//        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(roomid)));
+//        key.setRoomID(roomid);
 
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
@@ -152,10 +156,12 @@ public class WebSocket extends Observer {
         newMsg.setSender(owner);
 
 
-        BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
+//        BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
+        String jsonNewMsg = JSON.toJSONString(newMsg);
+        RoomHot.addMessage(roomid,jsonNewMsg);
 
         //放入消息队列
-        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
+        BackendApplication.HotData.SendMSG(roomid,jsonNewMsg);
     }
     @OnMessage
     public void onMessage(Session session, String content, @PathParam("roomid") String roomid, @PathParam("username") String username){

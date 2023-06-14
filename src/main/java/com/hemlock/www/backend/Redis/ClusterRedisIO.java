@@ -1,17 +1,11 @@
 package com.hemlock.www.backend.Redis;
 
-import com.hemlock.www.backend.MessageQueue.Subscriber;
-import com.hemlock.www.backend.MessageQueue.Subscriber;
-import com.hemlock.www.backend.room.Message;
+
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
-import io.lettuce.core.cluster.pubsub.RedisClusterPubSubAdapter;
 import io.lettuce.core.cluster.pubsub.StatefulRedisClusterPubSubConnection;
-import io.lettuce.core.pubsub.RedisPubSubAdapter;
-import io.lettuce.core.pubsub.RedisPubSubListener;
-
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -88,7 +82,13 @@ public class ClusterRedisIO {
         return syncCommands.llen(key);
     }
 
-    public void ListRPop(String key){
+    public String ListRPop(String key){
+        RedisClusterCommands<String, String> syncCommands = myConnection.sync();
+        return syncCommands.rpop(key);
+    }
 
+    public Long ListRPush(String key,String val){
+        RedisClusterCommands<String, String> syncCommands = myConnection.sync();
+        return syncCommands.rpush(key,val);
     }
 }

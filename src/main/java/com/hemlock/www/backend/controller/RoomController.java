@@ -89,7 +89,9 @@ public class RoomController {
         String storedRoomJson = JSON.toJSONString(room);
 
         // 房间必须得有LastMessageID
-        RoomHot.SetLastMessageID(roomNum);
+//        RoomHot.SetLastMessageID(roomNum);
+
+        RoomHot.createNewList(roomNum,owner);
 
 
         if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
@@ -190,25 +192,26 @@ public class RoomController {
 
         Member owner = new Member(user, storedUserValue.getNickname());
 
-        // check meta data
-        if (!RoomHot.checkExistMessage(args.getId())) {
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        }
+//        // check meta data
+//        if (!RoomHot.checkExistMessage(args.getId())) {
+//            return ResponseEntity.status(HttpStatus.OK).body(null);
+//        }
 
-        ArrayList<MessageValue> retVal = new ArrayList<>();
+//        ArrayList<MessageValue> retVal = new ArrayList<>();
+//
+//        MessageKey key = new MessageKey();
+//        key.setMessageID(Integer.parseInt(RoomHot.getLastMessageID(args.getId())));
+//        key.setRoomID(args.getId());
+//
+//        for (int messageIndex = key.getMessageID(); messageIndex > 0; messageIndex--) {
+//            MessageValue message = JSON.parseObject(BackendApplication.HotData.Get(JSON.toJSONString(key)), MessageValue.class);
+//            retVal.add(message);
+//            key.setMessageID(key.getMessageID() - 1);
+//        }
+        // 使用Redis List
+        List<String> retval = RoomHot.getMessageRange(args.getId(),0,-1);
 
-        MessageKey key = new MessageKey();
-        key.setMessageID(Integer.parseInt(RoomHot.getLastMessageID(args.getId())));
-        key.setRoomID(args.getId());
-
-        for (int messageIndex = key.getMessageID(); messageIndex > 0; messageIndex--) {
-            MessageValue message = JSON.parseObject(BackendApplication.HotData.Get(JSON.toJSONString(key)), MessageValue.class);
-            retVal.add(message);
-            key.setMessageID(key.getMessageID() - 1);
-        }
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(retVal));
+        return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(retval));
     }
 
 //    @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
