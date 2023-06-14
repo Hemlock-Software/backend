@@ -94,7 +94,8 @@ public class RoomController {
         RoomHot.createNewList(roomNum,owner);
 
 
-        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
+//        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
+        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson))
             return ResponseEntity.status(HttpStatus.OK).body(roomNum);
         else
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
