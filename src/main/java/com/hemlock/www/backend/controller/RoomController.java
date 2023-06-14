@@ -212,7 +212,7 @@ public class RoomController {
         // 使用Redis List
         List<String> retval = RoomHot.getMessageRange(args.getId(),0,-1);
 
-        return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(retval));
+        return ResponseEntity.status(HttpStatus.OK).body(retval.toString());
     }
 
 //    @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
