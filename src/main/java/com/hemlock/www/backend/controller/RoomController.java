@@ -353,7 +353,7 @@ public class RoomController {
                 }
                 // delete room
                 BackendApplication.ColdData.Delete(args.getRoomID());
-                BackendApplication.HotData.Del(args.getRoomID());
+                RoomHot.delAllMessage(args.getRoomID());
                 // broadcast the dismissal
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
@@ -363,8 +363,7 @@ public class RoomController {
                 newMsg.setTime(dateFormat.format(date));
                 newMsg.setSender(new Member(user, storedUserValue.getNickname()));
                 //放入消息队列
-                BackendApplication.HotData.SendMSG(args.getRoomID(), JSON.toJSONString(newMsg));
-
+                RoomHot.sendTempMessage(args.getRoomID(), newMsg);
                 return ResponseEntity.status(HttpStatus.OK).body("dismiss room success!");
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not owner!");

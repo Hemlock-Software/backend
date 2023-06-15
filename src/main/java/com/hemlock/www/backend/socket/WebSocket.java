@@ -238,8 +238,13 @@ public class WebSocket extends Observer {
         Set<String> sessionIdSet = socketMap.get(roomId).keySet(); //获得Map的Key的集合
         for (String sessionId : sessionIdSet) { //迭代Key集合
             Session session1 = socketMap.get(roomId).get(sessionId); //根据Key得到value
-            session1.getAsyncRemote().sendText(message); //发送消息给客户端
-
+            synchronized (session1){
+                try {
+                    session1.getBasicRemote().sendText(message); //发送消息给客户端
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
