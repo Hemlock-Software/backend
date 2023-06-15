@@ -79,7 +79,6 @@ public class WebSocket extends Observer {
         for (String sessionId : sessionIdSet) { //迭代Key集合
             Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
             session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
-
         }
         System.out.println("connect: "+onlineClientNumber);
     }

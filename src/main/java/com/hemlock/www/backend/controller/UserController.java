@@ -174,14 +174,12 @@ public class UserController {
                     email.setMsg("您正在找回Hemlock聊天室的密码，您的验证码：" + uid.toString());//设置发送内容
                 }
 
-
                 String s = email.send();
                 System.out.println("返回"+s);
             }
         } catch (EmailException | MessageAggregationException e) {
             e.printStackTrace();
         }
-
 
         //email.send();
 //            System.out.println(uid.toString());
