@@ -89,10 +89,13 @@ public class RoomController {
         String storedRoomJson = JSON.toJSONString(room);
 
         // 房间必须得有LastMessageID
-        RoomHot.SetLastMessageID(roomNum);
+//        RoomHot.SetLastMessageID(roomNum);
+
+//        RoomHot.createNewList(roomNum,owner);
 
 
-        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
+//        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson) && BackendApplication.HotData.Set(roomNum, "0"))
+        if (BackendApplication.ColdData.Set(roomNum, storedRoomJson))
             return ResponseEntity.status(HttpStatus.OK).body(roomNum);
         else
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
@@ -190,25 +193,26 @@ public class RoomController {
 
         Member owner = new Member(user, storedUserValue.getNickname());
 
-        // check meta data
-        if (!RoomHot.checkExistMessage(args.getId())) {
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        }
+//        // check meta data
+//        if (!RoomHot.checkExistMessage(args.getId())) {
+//            return ResponseEntity.status(HttpStatus.OK).body(null);
+//        }
 
-        ArrayList<MessageValue> retVal = new ArrayList<>();
+//        ArrayList<MessageValue> retVal = new ArrayList<>();
+//
+//        MessageKey key = new MessageKey();
+//        key.setMessageID(Integer.parseInt(RoomHot.getLastMessageID(args.getId())));
+//        key.setRoomID(args.getId());
+//
+//        for (int messageIndex = key.getMessageID(); messageIndex > 0; messageIndex--) {
+//            MessageValue message = JSON.parseObject(BackendApplication.HotData.Get(JSON.toJSONString(key)), MessageValue.class);
+//            retVal.add(message);
+//            key.setMessageID(key.getMessageID() - 1);
+//        }
+        // 使用Redis List
+        List<String> retval = RoomHot.getMessageRange(args.getId(),0,-1);
 
-        MessageKey key = new MessageKey();
-        key.setMessageID(Integer.parseInt(RoomHot.getLastMessageID(args.getId())));
-        key.setRoomID(args.getId());
-
-        for (int messageIndex = key.getMessageID(); messageIndex > 0; messageIndex--) {
-            MessageValue message = JSON.parseObject(BackendApplication.HotData.Get(JSON.toJSONString(key)), MessageValue.class);
-            retVal.add(message);
-            key.setMessageID(key.getMessageID() - 1);
-        }
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(JSON.toJSONString(retVal));
+        return ResponseEntity.status(HttpStatus.OK).body(retval.toString());
     }
 
 //    @RequestMapping(value = "/enter-room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -246,6 +250,12 @@ public class RoomController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DB error!");
 //    }
 
+    /**
+     * 用户退出房间
+     *
+     * @param args  请求体参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/quit_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> QuitRoom(HttpServletRequest request, @RequestBody QuitRoomArgs args) {
         // 1. get user data
@@ -276,6 +286,12 @@ public class RoomController {
         }
     }
 
+    /**
+     * 聊天室管理员踢出成员
+     *
+     * @param args  请求体参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/remove_member", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> RemoveMember(HttpServletRequest request, @RequestBody RemoveMemberArgs args) {
         // 1. get user data
@@ -309,6 +325,12 @@ public class RoomController {
         }
     }
 
+    /**
+     * 解散房间
+     *
+     * @param args  请求体参数
+     * @param request 用于认证用户登录情况
+     */
     @RequestMapping(value = "/dismiss_room", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> DismissRoom(HttpServletRequest request, @RequestBody DismissRoomArgs args) {
         // 1. get user data
@@ -331,6 +353,7 @@ public class RoomController {
                 }
                 // delete room
                 BackendApplication.ColdData.Delete(args.getRoomID());
+                BackendApplication.HotData.Del(args.getRoomID());
                 // broadcast the dismissal
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");

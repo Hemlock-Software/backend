@@ -1,5 +1,6 @@
 package com.hemlock.www.backend.MessageQueue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Subscriber {
         observers.remove(observer);
     }
 
-    public void notifyAllObservers(String roomId,String message){
+    public void notifyAllObservers(String roomId,String message) throws IOException {
         for(Observer observer:observers){
                observer.update(roomId,message);
         }
