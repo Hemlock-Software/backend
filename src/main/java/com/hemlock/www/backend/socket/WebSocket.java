@@ -65,7 +65,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
         // 下面是示例代码，仅作为参考，请根据实际情况修改
         Map<String, String> parameters = new HashMap<>();
         String query = uri.getQuery();
-        System.out.println("query"+query);
+        //System.out.println("query"+query);
         if (query != null && !query.isEmpty()) {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
@@ -73,7 +73,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
                 if (keyValue.length == 2) {
                     String key = keyValue[0];
                     String value = keyValue[1];
-                    System.out.println(key+" "+value);
+                    //System.out.println(key+" "+value);
                     parameters.put(key, value);
                 }
             }
@@ -93,7 +93,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
         Map<String, String> parameters = parseParameters(uri);
         String roomid = parameters.get("roomid");
         String username = parameters.get("username");
-        System.out.println(roomid+" "+username);
+        //System.out.println(roomid+" "+username);
 
         onlineClientNumber.incrementAndGet();//在线数+1
         if (!socketMap.containsKey(roomid)){
@@ -124,7 +124,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
         BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
         
 
-        System.out.println("connect: "+onlineClientNumber);
+        //System.out.println("connect: "+onlineClientNumber);
     }
 
     @Override
@@ -160,13 +160,13 @@ public class WebSocket extends Observer implements WebSocketHandler {
         //转发给其他用户
         BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
 
-        System.out.println("close: "+onlineClientNumber);
+        //System.out.println("close: "+onlineClientNumber);
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception){
         //连接错误
-        System.out.println("连接出错");
+        //System.out.println("连接出错");
     }
 
 
@@ -201,8 +201,8 @@ public class WebSocket extends Observer implements WebSocketHandler {
         Object payload = message.getPayload();
         String content = (String) payload;
 
-        System.out.println("roomid:"+roomid+" username:"+username);
-        System.out.println("message1: "+onlineClientNumber);
+        //System.out.println("roomid:"+roomid+" username:"+username);
+        //System.out.println("message1: "+onlineClientNumber);
 
         String storedUserJson = BackendApplication.ColdData.Get(username);
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
@@ -262,7 +262,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
 //            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
 //
 //        }
-        System.out.println("message2: "+onlineClientNumber);
+        //System.out.println("message2: "+onlineClientNumber);
     }
 
     @Override
@@ -270,7 +270,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
         if (!socketMap.containsKey(roomId)){
             return;
         }
-        System.out.println("message queue valid");
+        //System.out.println("message queue valid");
         Set<String> sessionIdSet = socketMap.get(roomId).keySet(); //获得Map的Key的集合
         for (String sessionId : sessionIdSet) { //迭代Key集合
 

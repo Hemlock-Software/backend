@@ -56,23 +56,23 @@ public class ZKManager {
                 build();
         //启动客户端
         ZKclient.start();
-        System.out.println("zookeeper初始化连接成功：" + ZKclient);
+        //System.out.println("zookeeper初始化连接成功：" + ZKclient);
     }
 
     public static void createNode(String nodePath, String data) throws Exception {
         if (nodePath == null) {
-            System.out.println("节点不能为空");
+            //System.out.println("节点不能为空");
             return;
         }
         String path = ROOT_NODE + "/" + nodePath;
         Stat exists = ZKclient.checkExists().forPath(path);
         if (null != exists) {
-            System.out.println("节点[" + path + "]已存在");
+            //System.out.println("节点[" + path + "]已存在");
             return;
         }
         if (null != data) {
             ZKclient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, data.getBytes());
-            System.out.println("节点[" + path + "]创建成功");
+            //System.out.println("节点[" + path + "]创建成功");
         }
     }
 
@@ -82,11 +82,11 @@ public class ZKManager {
         pathChildrenCache.getListenable().addListener((client, event) -> {
             if (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED
                     || event.getType() == PathChildrenCacheEvent.Type.CHILD_REMOVED) {
-                System.out.print("节点发生变化, 当前节点如下: ");
+                //System.out.print("节点发生变化, 当前节点如下: ");
                 for (String member : ZKclient.getChildren().forPath(ROOT_NODE)) {
-                    System.out.print(member+" ");
+                    //System.out.print(member+" ");
                 }
-                System.out.println();
+                //System.out.println();
             }
         });
         pathChildrenCache.start();
@@ -94,23 +94,23 @@ public class ZKManager {
 
     private static void deleteNode(String nodePath) throws Exception {
         if (nodePath == null) {
-            System.out.println("节点不能为空");
+            //System.out.println("节点不能为空");
             return;
         }
         String path = ROOT_NODE + "/" + nodePath;
         ZKclient.delete().guaranteed().forPath(path);
-        System.out.println("节点[" + path + "]删除成功");
+        //System.out.println("节点[" + path + "]删除成功");
     }
 
     private static void updateNode(String nodePath, String data) throws Exception {
         if (nodePath == null) {
-            System.out.println("节点不能为空");
+            //System.out.println("节点不能为空");
             return;
         }
         String path = ROOT_NODE + "/" + nodePath;
         Stat stat = ZKclient.setData().inBackground().forPath(path, data.getBytes());
         if (null != stat) {
-            System.out.println("节点[" + path + "]更新成功");
+            //System.out.println("节点[" + path + "]更新成功");
         }
     }
 }

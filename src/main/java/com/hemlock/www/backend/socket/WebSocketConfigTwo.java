@@ -33,7 +33,7 @@ public class WebSocketConfigTwo implements WebSocketConfigurer {
 //        @Override
 //        public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
 //                                       WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-//            System.out.println("前置拦截~~");
+//            //System.out.println("前置拦截~~");
 //
 //            if (!(request instanceof ServletServerHttpRequest)) return true;
 //
@@ -48,7 +48,7 @@ public class WebSocketConfigTwo implements WebSocketConfigurer {
 //        @Override
 //        public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
 //                                   WebSocketHandler wsHandler, Exception exception) {
-//            System.out.println("后置拦截~~");
+//            //System.out.println("后置拦截~~");
 //        }
 //    }
 }

@@ -56,7 +56,7 @@ public class TokenManager {
         try{
             result = TokenManager.createJWT(JSON.toJSONString(tokenData),ttl);
         } catch (Exception e){
-            System.out.println(e);
+            //System.out.println(e);
         }
 
         return result;
@@ -71,12 +71,12 @@ public class TokenManager {
             Claims result = TokenManager.decodeJWT(token);
             if(result!=null){
                 //获取TokenData和过期时间
-                //System.out.println(result.get("body"));
-                //System.out.println(result.get("exp"));
+                ////System.out.println(result.get("body"));
+                ////System.out.println(result.get("exp"));
             }
             return result.get("body").toString();
         } catch (Exception e){
-            //System.out.println(e);
+            ////System.out.println(e);
             return null;
         }
 
@@ -87,12 +87,12 @@ public class TokenManager {
             Claims result = TokenManager.decodeJWT(token);
             if(result!=null){
                 //获取TokenData和过期时间
-                //System.out.println(result.get("body"));
-                //System.out.println(result.get("exp"));
+                ////System.out.println(result.get("body"));
+                ////System.out.println(result.get("exp"));
             }
             return result.get("exp").toString();
         } catch (Exception e){
-            System.out.println(e);
+            //System.out.println(e);
             return null;
         }
 

@@ -41,7 +41,7 @@ public class ClusterRedisIO {
 
     public void Subscribe(String channel){
         subConnection.sync().subscribe(channel);
-        System.out.println("subsribe "+channel);
+        //System.out.println("subsribe "+channel);
     }
     public void SendMSG(String roomId,String message){
         RedisClusterCommands<String,String> commands=pubConnection.sync();

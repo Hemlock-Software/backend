@@ -10,7 +10,7 @@ public class MyRedisClusterPubSubListener extends RedisPubSubAdapter<String, Str
 
     @Override
     public void message(String channel, String message) {
-        System.out.println("Message received from channel " + channel + ": " + message);
+        //System.out.println("Message received from channel " + channel + ": " + message);
         try {
             Subscriber.getInstance().notifyAllObservers(channel,message);
         } catch (IOException e) {

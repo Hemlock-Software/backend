@@ -148,7 +148,7 @@ public class RoomController {
 //    @RequestMapping(value = "/send_message_test", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 //    public ResponseEntity<String> SendMessageTest(HttpServletRequest request, @RequestBody TestSendMsgArgs args) {
 //        String user = (String) request.getAttribute("email");
-//        System.out.println(user);
+//        //System.out.println(user);
 //        String storedUserJson = BackendApplication.ColdData.Get(user);
 //        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
 //
@@ -156,13 +156,13 @@ public class RoomController {
 //
 //        StringBuilder retVal = new StringBuilder();
 //
-//        System.out.println(args);
+//        //System.out.println(args);
 //
 //        MessageKey key = new MessageKey();
 //        key.setMessageID(Integer.parseInt(RoomHot.incrementLastMessageID(args.getId())));
 //        key.setRoomID(args.getId());
 //
-//        System.out.println(key);
+//        //System.out.println(key);
 //
 //        //prepare new message
 //        Date date = new Date();

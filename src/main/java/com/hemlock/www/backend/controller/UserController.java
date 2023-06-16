@@ -77,10 +77,10 @@ public class UserController {
 
         }
         TokenData tokenData = JSON.parseObject(realToken, TokenData.class);
-//        System.out.println(tokenData.getVerifyCode());
-//        System.out.println(tokenData.getEmail());
-//        System.out.println(args.getMail());
-//        System.out.println(args.getVerifyCode());
+//        //System.out.println(tokenData.getVerifyCode());
+//        //System.out.println(tokenData.getEmail());
+//        //System.out.println(args.getMail());
+//        //System.out.println(args.getVerifyCode());
         if (!Objects.equals(args.getVerifyCode(), tokenData.getVerifyCode()) || !Objects.equals(args.getMail(), tokenData.getEmail())) {
 
 //            return new JSONResult<String>("400", "验证码错误", "");
@@ -120,7 +120,7 @@ public class UserController {
 
         String storedUserJson = BackendApplication.ColdData.Get(args.getMail());
         UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
-//        System.out.print(storedUserValue.getPassword());
+//        //System.out.print(storedUserValue.getPassword());
 
         if (Objects.equals(args.getPassword(), storedUserValue.getPassword())) {
             TokenData tokenData = new TokenData(args.getMail(), null, TokenData.Type.Login);
@@ -174,14 +174,14 @@ public class UserController {
                 }
 
                 String s = email.send();
-                System.out.println("返回"+s);
+                //System.out.println("返回"+s);
             }
         } catch (EmailException | MessageAggregationException e) {
             e.printStackTrace();
         }
 
         //email.send();
-//            System.out.println(uid.toString());
+//            //System.out.println(uid.toString());
         //将email和验证码放入token data，并转化为字符串，生成带有这两个变量的token
         TokenData tokenData = new TokenData(args.getMail(), uid.toString(), TokenData.Type.Register);
         String token = BackendApplication.TokenServer.SetToken(tokenData);   //10分钟过期
