@@ -2,6 +2,8 @@ package com.hemlock.www.backend.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.hemlock.www.backend.BackendApplication;
+import com.hemlock.www.backend.ChatBot.ChatGLM;
+import com.hemlock.www.backend.ChatBot.ChatGLMHistory;
 import com.hemlock.www.backend.request.*;
 import com.hemlock.www.backend.user.UserStoredRoomValue;
 import com.hemlock.www.backend.user.UserValue;
@@ -14,6 +16,8 @@ import com.hemlock.www.backend.room.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.hemlock.www.backend.socket.WebSocket.ChatGLMHistoryPrifix;
 
 @CrossOrigin(methods = {RequestMethod.POST})
 
@@ -353,6 +357,7 @@ public class RoomController {
                 }
                 // delete room
                 BackendApplication.ColdData.Delete(args.getRoomID());
+                BackendApplication.HotData.Del(ChatGLMHistoryPrifix + args.getRoomID());
                 RoomHot.delAllMessage(args.getRoomID());
                 // broadcast the dismissal
                 Date date = new Date();

@@ -16,6 +16,7 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.WebSession;
 import org.springframework.web.socket.*;
+import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator;
 
 import java.io.IOException;
 import java.net.URI;
@@ -45,7 +46,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
 
     // 记录每个房间的ChatGLM记录
     // 放redis里面，以后负载均衡也能用
-    private static String ChatGLMHistoryPrifix = "ChatGLMHistory";
+    public static String ChatGLMHistoryPrifix = "ChatGLMHistory";
 
     // 在静态代码块中添加观察者
     static {
@@ -99,35 +100,28 @@ public class WebSocket extends Observer implements WebSocketHandler {
             socketMap.put(roomid,new ConcurrentHashMap<>());
             BackendApplication.HotData.Subscribe(roomid);
         }
-        socketMap.get(roomid).put(session.getId(),session);
+
+
+        socketMap.get(roomid).put(session.getId(), new ConcurrentWebSocketSessionDecorator(session,10000,1024*128, ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP));
 //        onlineClientMap.put(session.getId(),session);//添加当前连接的session
 
-//        String content = "enter";
-//        String storedUserJson = BackendApplication.ColdData.Get(username);
-//        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
-//
-//        Member owner = new Member("$notice$", storedUserValue.getNickname());
-//
-//        Date date = new Date();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
-//        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-//        MessageValue newMsg = new MessageValue();
-//        newMsg.setContent(content);
-//        newMsg.setTime(dateFormat.format(date));
-//        newMsg.setSender(owner);
+        String content = "enter";
+        String storedUserJson = BackendApplication.ColdData.Get(username);
+        UserValue storedUserValue = JSON.parseObject(storedUserJson, UserValue.class);
+
+        Member owner = new Member("$notice$", storedUserValue.getNickname());
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd :HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        MessageValue newMsg = new MessageValue();
+        newMsg.setContent(content);
+        newMsg.setTime(dateFormat.format(date));
+        newMsg.setSender(owner);
 
 
         //转发给其他用户
-//        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
-
-//        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
-//        for (String sessionId : sessionIdSet) { //迭代Key集合
-//            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
-//            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
-//
-//        }
-
-//        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
+        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
         
 
         System.out.println("connect: "+onlineClientNumber);
@@ -163,18 +157,8 @@ public class WebSocket extends Observer implements WebSocketHandler {
         newMsg.setTime(dateFormat.format(date));
         newMsg.setSender(owner);
 
-//        BackendApplication.HotData.Set(JSON.toJSONString(key), JSON.toJSONString(newMsg));
-
-
         //转发给其他用户
-//        Set<String> sessionIdSet = onlineClientMap.keySet(); //获得Map的Key的集合
-//        Set<String> sessionIdSet = socketMap.get(roomid).keySet(); //获得Map的Key的集合
-//        for (String sessionId : sessionIdSet) { //迭代Key集合
-//            Session session1 = socketMap.get(roomid).get(sessionId); //根据Key得到value
-//            session1.getAsyncRemote().sendText(JSON.toJSONString(newMsg)); //发送消息给客户端
-//
-//        }
-//        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
+        BackendApplication.HotData.SendMSG(roomid,JSON.toJSONString(newMsg));
 
         System.out.println("close: "+onlineClientNumber);
     }
