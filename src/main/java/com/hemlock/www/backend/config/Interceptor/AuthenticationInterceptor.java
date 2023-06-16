@@ -34,7 +34,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
         if(token==null||token.length()<7){
             PrintWriter printWriter = Response.getWriter();
-            printWriter.write("{\"message\":\"Unauthorized: No token.\"}");
+            printWriter.write("Unauthorized Access: Wrong token. Please log out");
             printWriter.flush();
             printWriter.close();
 
@@ -45,7 +45,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if(realToken==null){
             Response.setStatus(400);
             PrintWriter printWriter = Response.getWriter();
-            printWriter.write("{\"message\":\"Unauthorized: Wrong token.\"}");
+            printWriter.write("Unauthorized Access: Wrong token. Please log out");
             printWriter.flush();
             printWriter.close();
             return false;
