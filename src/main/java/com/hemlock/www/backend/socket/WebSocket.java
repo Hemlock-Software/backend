@@ -73,7 +73,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
                 String[] keyValue = pair.split("=");
-                if (keyValue.length == 3) {
+                if (keyValue.length == 2) {
                     String key = keyValue[0];
                     String value = keyValue[1];
                     //System.out.println(key+" "+value);
