@@ -7,6 +7,7 @@ import com.hemlock.www.backend.ChatBot.ChatGLMHistory;
 import com.hemlock.www.backend.MessageQueue.Observer;
 import com.hemlock.www.backend.MessageQueue.Subscriber;
 import com.hemlock.www.backend.Redis.ClusterRedisIO;
+import com.hemlock.www.backend.Token.TokenManager;
 import com.hemlock.www.backend.room.*;
 import com.hemlock.www.backend.user.UserValue;
 import com.sun.mail.imap.MessageVanishedEvent;
@@ -27,6 +28,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.springframework.web.socket.CloseStatus.NOT_ACCEPTABLE;
 
 /**
  * @program: backend
@@ -70,7 +73,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
                 String[] keyValue = pair.split("=");
-                if (keyValue.length == 2) {
+                if (keyValue.length == 3) {
                     String key = keyValue[0];
                     String value = keyValue[1];
                     //System.out.println(key+" "+value);
@@ -93,6 +96,11 @@ public class WebSocket extends Observer implements WebSocketHandler {
         Map<String, String> parameters = parseParameters(uri);
         String roomid = parameters.get("roomid");
         String username = parameters.get("username");
+        String token = parameters.get("token");
+        if(BackendApplication.TokenServer.Verify(token)==null){
+            session.close(NOT_ACCEPTABLE);
+            return;
+        }
         //System.out.println(roomid+" "+username);
 
         onlineClientNumber.incrementAndGet();//在线数+1
