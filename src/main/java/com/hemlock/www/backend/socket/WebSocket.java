@@ -101,8 +101,8 @@ public class WebSocket extends Observer implements WebSocketHandler {
             BackendApplication.HotData.Subscribe(roomid);
         }
 
-        //socketMap.get(roomid).put(session.getId(),session);
-        socketMap.get(roomid).put(session.getId(), new ConcurrentWebSocketSessionDecorator(session,10000,1024*128, ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP));
+        socketMap.get(roomid).put(session.getId(),session);
+        //socketMap.get(roomid).put(session.getId(), new ConcurrentWebSocketSessionDecorator(session,10000,1024*128, ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP));
 //        onlineClientMap.put(session.getId(),session);//添加当前连接的session
 
         String content = "enter";

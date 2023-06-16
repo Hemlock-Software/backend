@@ -20,7 +20,7 @@ public class WebSocketConfigTwo implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocket(), "//websocket")//设置连接路径和处理
+        registry.addHandler(new WebSocket(), "/websocket")//设置连接路径和处理
                 .setAllowedOrigins("*");//设置拦截器
     }
 
