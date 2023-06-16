@@ -40,7 +40,11 @@ public class RoomHot {
     }
 
     public static void delAllMessage(String ID){
+        BackendApplication.HotData.Del(ID);
+    }
 
+    public static void sendTempMessage(String ID,MessageValue msg){
+        BackendApplication.HotData.SendMSG(ID,JSON.toJSONString(msg));
     }
 
 //    public static void createNewList(String ID,Member creator){
