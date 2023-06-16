@@ -70,7 +70,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
                 String[] keyValue = pair.split("=");
-                if (keyValue.length == 2) {
+                if (keyValue.length == 3) {
                     String key = keyValue[0];
                     String value = keyValue[1];
                     //System.out.println(key+" "+value);
@@ -101,8 +101,8 @@ public class WebSocket extends Observer implements WebSocketHandler {
             BackendApplication.HotData.Subscribe(roomid);
         }
 
-        //socketMap.get(roomid).put(session.getId(),session);
-        socketMap.get(roomid).put(session.getId(), new ConcurrentWebSocketSessionDecorator(session,10000,1024*16, ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP));
+        socketMap.get(roomid).put(session.getId(),session);
+        //socketMap.get(roomid).put(session.getId(), new ConcurrentWebSocketSessionDecorator(session,10000,1024*16, ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP));
 //        onlineClientMap.put(session.getId(),session);//添加当前连接的session
 
         String content = "enter";
@@ -273,11 +273,10 @@ public class WebSocket extends Observer implements WebSocketHandler {
         //System.out.println("message queue valid");
         Set<String> sessionIdSet = socketMap.get(roomId).keySet(); //获得Map的Key的集合
         for (String sessionId : sessionIdSet) { //迭代Key集合
-
             WebSocketSession session1 = socketMap.get(roomId).get(sessionId); //根据Key得到value
-            session1.sendMessage(new TextMessage(message)); //发送消息给客户端
-
-
+            synchronized (session1){
+                session1.sendMessage(new TextMessage(message)); //发送消息给客户端
+            }
         }
     }
 
