@@ -40,7 +40,7 @@ public class WebSocket extends Observer implements WebSocketHandler {
     private static AtomicInteger onlineClientNumber = new AtomicInteger(0);
     //在线客户端的集合
     private static Map<String , Session> onlineClientMap = new ConcurrentHashMap<>();
-    private static Map<String,Map<String , WebSocketSession>> socketMap = new HashMap<>();
+    private static Map<String,Map<String , WebSocketSession>> socketMap = new ConcurrentHashMap<>();
     private static boolean isObserverAdded = false; //添加静态变量
     private static WebSocket observerInstance = new WebSocket(); // 创建静态观察者实例
 
@@ -101,8 +101,8 @@ public class WebSocket extends Observer implements WebSocketHandler {
             BackendApplication.HotData.Subscribe(roomid);
         }
 
-        socketMap.get(roomid).put(session.getId(),session);
-        //socketMap.get(roomid).put(session.getId(), new ConcurrentWebSocketSessionDecorator(session,10000,1024*128, ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP));
+        //socketMap.get(roomid).put(session.getId(),session);
+        socketMap.get(roomid).put(session.getId(), new ConcurrentWebSocketSessionDecorator(session,10000,1024*128, ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP));
 //        onlineClientMap.put(session.getId(),session);//添加当前连接的session
 
         String content = "enter";
